@@ -10,15 +10,27 @@ el video con **HyperFrames** o **Remotion** y lo revisa antes de entregártelo.
 
 ## Empezar
 
+Necesitas [Claude Code](https://claude.com/claude-code) (terminal o app de escritorio) en macOS o
+Linux. Clona el repo en una carpeta local:
+
 ```bash
-git clone <este repo> ~/Developer/estudio-video-ia
+git clone https://github.com/tamibot/estudio-video-ia.git ~/Developer/estudio-video-ia
 ```
+
+Ábrelo con Claude Code: en la terminal,
 
 ```bash
 cd ~/Developer/estudio-video-ia && claude
 ```
 
-Escribe «hola». Claude revisa qué falta y te lleva paso a paso:
+o en la app de escritorio, una sesión nueva con la carpeta `~/Developer/estudio-video-ia`.
+Acepta la confianza en la carpeta (activa el hook de inicio) y escribe «hola».
+
+¿Ya estás en una sesión de Claude Code? Pégale esto y luego abre una sesión nueva en esa carpeta:
+«Clona https://github.com/tamibot/estudio-video-ia en ~/Developer/estudio-video-ia y corre
+`bash scripts/kit.sh instalar`».
+
+Claude revisa qué falta y te lleva paso a paso:
 
 1. **`/instalar`** — ffmpeg, yt-dlp, whisper, HyperFrames y las skills (una sola vez).
 2. **`/referencias`** — «Pásame tus referencias»: 3 a 5 videos que te gusten (Instagram, TikTok,

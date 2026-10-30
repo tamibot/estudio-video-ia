@@ -1,0 +1,20 @@
+# Lo de cada usuario se queda en su máquina
+.env
+/perfil/
+/referencias/
+/proyectos/
+
+# Pesado o regenerable
+node_modules/
+.hyperframes/
+.remotion/
+.cache/
+out/
+renders/
+*.mp4
+*.mov
+*.wav
+*.mp3
+*.m4a
+.DS_Store
+__pycache__/

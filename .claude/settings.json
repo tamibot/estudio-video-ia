@@ -1,0 +1,32 @@
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"$CLAUDE_PROJECT_DIR/scripts/kit.sh\" estado"
+          }
+        ]
+      }
+    ]
+  },
+  "permissions": {
+    "allow": [
+      "Bash(bash scripts/kit.sh estado)",
+      "Bash(python3 scripts/referencia.py:*)",
+      "Bash(python3 scripts/puerta.py estado)",
+      "Bash(npx hyperframes:*)",
+      "Bash(npx -y hyperframes:*)",
+      "Bash(ffprobe:*)"
+    ],
+    "ask": [
+      "Bash(python3 scripts/eleven.py tts:*)",
+      "Bash(python3 scripts/eleven.py sfx:*)",
+      "Bash(python3 scripts/eleven.py musica:*)",
+      "Bash(python3 scripts/imagen.py:*)",
+      "Bash(python3 scripts/puerta.py permitir:*)",
+      "Bash(python3 scripts/puerta.py desbloquear:*)"
+    ]
+  }
+}

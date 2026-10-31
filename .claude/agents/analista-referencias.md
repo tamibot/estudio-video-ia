@@ -34,7 +34,7 @@ un editor lo reproduzca.
 ## Ritmo             plano medio, cambios/min, % en el beat (de ritmo.md) y qué significa
 ## Transiciones      cada tipo: cuándo aparece, cuánto dura, sonido que la acompaña, cómo construirla
 ## Texto y subtítulos fuente aproximada (serif/sans, peso), tamaño relativo, color, posición, cómo entra y sale, palabras por pantalla
-## Imagen            encuadres, movimiento de cámara, color/look, grano, fondos, recortes
+## Imagen            encuadres, movimiento de cámara, color/look (con los números del renglón «Imagen» de ritmo.md), grano, fondos, recortes
 ## Sonido            música (género, bpm, energía, dónde sube o corta), efectos (whoosh, golpe, pop), voz (palabras/s, tono)
 ## Receta para reproducirlo   6-10 viñetas con valores concretos: duraciones, easings, tamaños, colores, bpm; y si conviene HyperFrames o Remotion
 ## Qué NO copiar     contenido, marcas, audio y footage ajenos; lo que choca con el perfil

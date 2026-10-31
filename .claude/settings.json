@@ -13,20 +13,46 @@
   },
   "permissions": {
     "allow": [
+      "Edit(/perfil/**)",
+      "Edit(/referencias/**)",
+      "Edit(/proyectos/**)",
       "Bash(bash scripts/kit.sh estado)",
+      "Bash(bash scripts/kit.sh voz:*)",
+      "Bash(bash scripts/kit.sh limpiar:*)",
       "Bash(python3 scripts/referencia.py:*)",
       "Bash(python3 scripts/puerta.py estado)",
+      "Bash(python3 scripts/eleven.py saldo)",
+      "Bash(python3 scripts/eleven.py voces:*)",
+      "Bash(python3 scripts/eleven.py biblioteca:*)",
       "Bash(npx hyperframes:*)",
       "Bash(npx -y hyperframes:*)",
-      "Bash(ffprobe:*)"
+      "Bash(npx remotion:*)",
+      "Bash(ffprobe:*)",
+      "Bash(ffmpeg:*)",
+      "Bash(whisper-cli:*)",
+      "Bash(sips:*)",
+      "Bash(open:*)"
     ],
     "ask": [
+      "Bash(bash scripts/kit.sh instalar:*)",
+      "Bash(python3 scripts/referencia.py * --cookies-navegador *)",
       "Bash(python3 scripts/eleven.py tts:*)",
       "Bash(python3 scripts/eleven.py sfx:*)",
       "Bash(python3 scripts/eleven.py musica:*)",
       "Bash(python3 scripts/imagen.py:*)",
       "Bash(python3 scripts/puerta.py permitir:*)",
-      "Bash(python3 scripts/puerta.py desbloquear:*)"
+      "Bash(python3 scripts/puerta.py desbloquear:*)",
+      "Bash(npx *hyperframes* publish*)",
+      "Bash(npx *hyperframes* cloud*)",
+      "Bash(npx *hyperframes* lambda*)",
+      "Bash(npx *hyperframes* auth*)",
+      "Bash(npx *hyperframes* billing*)",
+      "Bash(npx *hyperframes* media-use generate*)",
+      "Bash(npx *hyperframes* * --engine heygen*)",
+      "Bash(npx *hyperframes* * --quality best*)",
+      "Bash(npm run publish*)",
+      "Bash(npx remotion lambda*)",
+      "Bash(npx remotion cloudrun*)"
     ]
   }
 }

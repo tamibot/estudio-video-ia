@@ -27,8 +27,10 @@ python3 scripts/referencia.py '<url>' referencias/<slug> --inicio 1:20 --fin 2:0
 - Uno por vez o hasta 3 en segundo plano. La puerta espacia las descargas por plataforma.
 - **429, 403 o STOP:** parar todas las descargas, no reintentar, avisar. Sugerir que pase los
   archivos descargados a mano mientras tanto.
-- **Instagram pide login:** ofrecer dos caminos: que baje el reel y pase el archivo, o (con su OK
-  explícito) `--cookies-navegador chrome`, que lee las cookies de su navegador.
+- **Instagram pide login** (sin sesión, a veces lo dice como «rate-limit… anonymously»; no es un
+  bloqueo): ofrecer dos caminos: que baje el reel y **arrastre el archivo a esta ventana** (llega
+  como ruta), o (con su OK explícito) `--cookies-navegador chrome`, que lee la sesión de su
+  navegador; macOS muestra un aviso del Llavero («Chrome Safe Storage»): tiene que darle a «Permitir».
 
 ## 3. Analizar (subagentes en paralelo, hasta 3)
 
@@ -47,7 +49,7 @@ Lee todos los ANALISIS.md y escribe la biblia, con números y no con adjetivos:
 ## Transiciones las 3-5 que se repiten: cuándo, cuánto duran, sonido, cómo se hacen (HyperFrames / Remotion)
 ## Texto        fuente aproximada, peso, tamaño, color, posición, cómo entra, palabras por pantalla
 ## Subtítulos   estilo, resaltado, posición (zona segura)
-## Imagen       encuadres, movimiento de cámara, color/look, grano, fondos
+## Imagen       encuadres, movimiento de cámara, color/look (renglón «Imagen» de ritmo.md: luz, contraste, saturación, temperatura), grano, fondos
 ## Sonido       música (género, bpm, energía, dónde sube), efectos (en qué momentos), voz (ritmo, palabras/s)
 ## Sí / No      lo que vamos a copiar del estilo y lo que no (contenido ajeno, logos, audio)
 ```
@@ -60,5 +62,6 @@ Más referencias después: se agregan igual y se actualiza `ESTILO.md`.
 ## Cerrar
 
 `referencias/<slug>/video.mp4` pesa: bórralo cuando el ANALISIS.md esté aprobado
-(`rm referencias/*/video.mp4`), salvo que la persona quiera conservarlo. Láminas, ritmo y análisis
+(`rm referencias/<slug>/video.mp4`, uno por uno según se aprueban), salvo que la persona quiera
+conservarlo. Láminas, ritmo y análisis
 se quedan.

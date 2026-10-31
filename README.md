@@ -1,48 +1,57 @@
 # Estudio de video con IA
 
-Un repositorio que convierte a Claude Code en un estudio de edición de video: te entrevista,
-estudia tus videos de referencia, escribe el guion, arma el audio al ritmo de la música, construye
-el video con **HyperFrames** o **Remotion** y lo revisa antes de entregártelo.
+Convierte a Claude Code en un estudio de edición de video: estudia los videos que te gustan, te
+entrevista, escribe el guion, arma el audio al ritmo de la música, edita con **HyperFrames** o
+**Remotion** y revisa cada avance cuadro a cuadro antes de mostrártelo.
 
 - Edición, animación, subtítulos y mezcla: HyperFrames (HTML + GSAP) y Remotion (React).
 - Imágenes generadas con OpenAI solo cuando un plano lo necesita.
-- Voz, efectos y música con ElevenLabs si tienes key; si no, tu voz y sonidos libres.
+- Voz, efectos y música con ElevenLabs si tienes key; si no, tu voz, una voz guía local gratis y
+  sonidos libres.
+
+**¿Primera vez? Lee [COMO-USARME.md](COMO-USARME.md)**: qué necesitas, cómo instalarlo, cómo
+pedir videos y cambios, dónde queda cada cosa y qué hacer si algo falla.
 
 ## Empezar
 
-Necesitas [Claude Code](https://claude.com/claude-code) (terminal o app de escritorio) en macOS o
-Linux. Clona el repo en una carpeta local:
+Necesitas una Mac (o Linux), [Claude Code](https://claude.com/claude-code) (app de Claude con plan
+Pro o Max, o la terminal) y ~20 GB libres.
+
+**Desde la app de Claude:** abre Claude Code en cualquier carpeta y pega
+
+> Clona https://github.com/tamibot/estudio-video-ia en ~/Developer/estudio-video-ia
+
+y abre una **sesión nueva** con la carpeta `~/Developer/estudio-video-ia`. Escribe «hola».
+
+**Desde la terminal:**
 
 ```bash
 git clone https://github.com/tamibot/estudio-video-ia.git ~/Developer/estudio-video-ia
 ```
 
-Ábrelo con Claude Code: en la terminal,
-
 ```bash
 cd ~/Developer/estudio-video-ia && claude
 ```
 
-o en la app de escritorio, una sesión nueva con la carpeta `~/Developer/estudio-video-ia`.
-Acepta la confianza en la carpeta (activa el hook de inicio) y escribe «hola».
+Acepta la confianza en la carpeta (activa la revisión de inicio). Si la Mac pide instalar las
+herramientas de desarrollo de Apple, acepta y espera. Guárdalo en una carpeta local, no en iCloud,
+Dropbox ni Drive.
 
-¿Ya estás en una sesión de Claude Code? Pégale esto y luego abre una sesión nueva en esa carpeta:
-«Clona https://github.com/tamibot/estudio-video-ia en ~/Developer/estudio-video-ia y corre
-`bash scripts/kit.sh instalar`».
+## El recorrido
 
-Claude revisa qué falta y te lleva paso a paso:
+Claude revisa qué falta al abrir y te lleva paso a paso:
 
-1. **`/instalar`** — ffmpeg, yt-dlp, whisper, HyperFrames y las skills (una sola vez).
+1. **`/instalar`** — ffmpeg, yt-dlp, whisper (con VAD), auto-editor, HyperFrames, la voz local y
+   las skills. Una sola vez, ~3 GB y 10-20 minutos.
 2. **`/referencias`** — «Pásame tus referencias»: 3 a 5 videos que te gusten (Instagram, TikTok,
-   YouTube o archivos). Los desarma cuadro a cuadro, mide el ritmo contra la música y arma tu
-   biblia de estilo.
-3. **`/empezar`** — el Director te entrevista: para qué son tus videos, dónde se publican, qué
-   estilo seguimos (partiendo de tus referencias), quién eres y a quién le hablas.
-4. **`/nuevo-video`** — brief → guion con hooks → plan → audio → construcción → revisión → MP4.
-   Te pide OK en cada etapa y antes de gastar.
+   YouTube o archivos). Los desarma cuadro a cuadro, mide el ritmo contra la música, la luz y el
+   color, y arma tu biblia de estilo.
+3. **`/empezar`** — el Director te entrevista: para qué son tus videos, dónde se publican, quién
+   eres, a quién le hablas, tu tono y tu identidad.
+4. **`/nuevo-video`** — brief → guion con 5 ganchos → plan → audio → avance → rondas de cambios →
+   MP4 final. Te pide OK en cada etapa y antes de gastar.
 
-Clónalo en una carpeta local (no en iCloud, Dropbox ni Drive). Requisitos: macOS o Linux, ~2 GB
-libres para herramientas y el modelo de whisper, más espacio para renders.
+`/ayuda` en cualquier momento: dónde vas, qué sigue y qué puedes decir.
 
 ## El equipo
 
@@ -50,20 +59,31 @@ libres para herramientas y el modelo de whisper, más espacio para renders.
 |---|---|
 | Director (la conversación) | entrevista, plan, aprobaciones, gasto |
 | `analista-referencias` | mira láminas y transiciones de cada referencia y escribe la receta |
-| `guionista` | hooks y guion con StoryBrand, Made to Stick y copywriting |
+| `guionista` | ganchos y guion con StoryBrand, Made to Stick y copywriting |
 | `sonidista` | voz, música, efectos, cortes sobre el beat, mezcla a −14 LUFS |
-| `editor` | construye en HyperFrames o Remotion y entrega avances |
+| `editor` | limpia el material, construye en HyperFrames o Remotion y entrega avances |
 | `revisor` | revisa cuadros reales contra el brief, el estilo y tus rechazos |
 
-## Herramientas propias (`scripts/`)
+## Herramientas
+
+Propias (`scripts/`):
 
 | Script | Para |
 |---|---|
-| `kit.sh` | `estado` (qué falta) e `instalar` |
-| `referencia.py` | desarma un video: planos, cortes secos y animados, láminas, transcripción, bpm, beats, % de cortes en el beat |
+| `kit.sh` | `estado` (qué falta), `instalar`, `voz` (voz guía local), `limpiar` (disco tras una entrega) |
+| `referencia.py` | desarma un video: planos, cortes secos y animados, láminas, transcripción, bpm, beats, % de cortes en el beat, luz y color |
 | `eleven.py` | voz, efectos y música con ElevenLabs |
 | `imagen.py` | imágenes puntuales con OpenAI, con el prompt guardado al lado |
 | `puerta.py` | contador compartido de cuotas: espacia descargas, frena ante 429 y exige permiso por lote para lo que cuesta |
+
+Externas que instala: [HyperFrames](https://github.com/heygen-com/hyperframes) (motor, auditoría
+`check`, cuadros `snapshot`, `audio`, `measure`, `diff`, `tts`),
+[Remotion](https://www.remotion.dev), [auto-editor](https://github.com/WyattBlue/auto-editor)
+(silencios y exportación a Premiere/Resolve/Final Cut), [whisper.cpp](https://github.com/ggml-org/whisper.cpp)
+con VAD Silero, [yt-dlp](https://github.com/yt-dlp/yt-dlp), ffmpeg y
+[Kokoro](https://github.com/thewh1teagle/kokoro-onnx) (voz local). Skills: HyperFrames, Remotion,
+GSAP, auto-editor, ElevenLabs, copywriting y marketing, StoryBrand, Made to Stick, guiones,
+ganchos de anuncios, cinetic y `find-skills` para buscar más (`npx skills find <tema>`).
 
 ## Guías (`guias/`)
 
@@ -73,16 +93,21 @@ libres para herramientas y el modelo de whisper, más espacio para renders.
 ## Tus datos y tus keys
 
 `perfil/`, `referencias/`, `proyectos/` y `.env` quedan en tu máquina: están en `.gitignore`.
+Tus videos terminados quedan en `proyectos/<fecha-nombre>/out/<nombre>-final.mp4`.
 Las keys van en `.env` (copiado de `.env.example`), nunca en el chat.
 
 ## Costos
 
-Todo es local y gratis salvo ElevenLabs y OpenAI. Antes de cada lote Claude te dice qué va a
-generar, cuántas llamadas y el costo aproximado, y espera tu OK (`puerta.py permitir`).
+Local y gratis: analizar, transcribir, limpiar material, editar, la voz guía y renderizar.
+Cuestan: ElevenLabs y OpenAI con tu key (antes de cada lote Claude te dice qué va a generar,
+cuántas llamadas y el costo aproximado, y espera tu OK), y las funciones en la nube de HyperFrames
+(publicar, renders en la nube, avatares), que el repo nunca usa sin preguntar. Remotion es gratis
+para personas y equipos de hasta 3; empresas más grandes necesitan [su licencia](https://www.remotion.pro/license).
 
-## Referencias externas
+## Actualizar
 
-- HyperFrames: https://github.com/heygen-com/hyperframes
-- Remotion: https://www.remotion.dev
-- Skills: https://skills.sh (buscar más con `npx skills find <tema>`)
-- Otro kit de la comunidad: [Claude Code Video Toolkit](https://github.com/wilwaldon/Claude-Code-Video-Toolkit)
+```bash
+git -C ~/Developer/estudio-video-ia pull && bash ~/Developer/estudio-video-ia/scripts/kit.sh instalar
+```
+
+Tu perfil, tus referencias y tus proyectos no se tocan.

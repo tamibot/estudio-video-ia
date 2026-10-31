@@ -39,4 +39,7 @@ AAC 48 kHz estéreo 192 kbps · −14 LUFS integrados · pico real ≤ −1 dB
 Con ffmpeg, si hay que reempaquetar:
 `ffmpeg -i in.mp4 -c:v libx264 -profile:v high -pix_fmt yuv420p -r 30 -crf 18 -c:a aac -ar 48000 -b:a 192k -movflags +faststart out.mp4`
 
+Volumen a −14 LUFS sin tocar la imagen:
+`ffmpeg -i in.mp4 -c:v copy -af loudnorm=I=-14:TP=-1.5:LRA=11 -ar 48000 -c:a aac -b:a 192k out.mp4`
+
 Verificar siempre: `ffprobe` (duración, tamaño, fps) y mirar cuadros del archivo final, no del preview.

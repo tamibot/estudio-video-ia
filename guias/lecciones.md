@@ -48,6 +48,19 @@ revisores: si no las conocen, proponen lo mismo que ya se rechazó.
 18. **Fuera de iCloud/Dropbox.** Los archivos «solo en la nube» cuelgan ffmpeg, Chrome y git sin
     dar error. Para detectarlos en Mac: `os.stat(f).st_flags & 0x40000000`.
 19. **Imágenes chicas para mirar** (≤ 768 px): cada imagen que se mira queda en el historial de la
-    conversación y una PNG completa pesa ~15 veces más. `sips -Z 768 -s format jpeg in.png --out x.jpg`.
+    conversación y una PNG completa pesa ~15 veces más. `sips -Z 768 -s format jpeg in.png --out x.jpg`
+    (Linux: `ffmpeg -i in.png -vf scale=768:-2 x.jpg`).
 20. **Tareas largas por etapas.** Al cerrar una etapa, el estado queda en los archivos del proyecto
     (brief, guion, plan, revision) y se puede seguir en una conversación nueva.
+
+## Herramientas
+
+21. **`hyperframes init` sin `--resolution` sale horizontal** (1920x1080), y el blank de Remotion,
+    1280x720. Fijar el formato del plan desde el arranque; cambiarlo después descuadra todo.
+22. **Instagram sin sesión dice «rate-limit… anonymously»**: es un pedido de login, no un bloqueo.
+    Pasar el archivo a mano o, con OK, la sesión del navegador.
+23. **Whisper sin VAD inventa texto** en silencios y en música sin voz («gracias por ver»). Con VAD
+    no, y el conteo de palabras por segundo deja de mentir.
+24. **Material grabado: primero sacar silencios** (auto-editor), después editar. Montar sobre el
+    bruto alarga cada ronda.
+25. **Una key mal pegada no es un bloqueo**: un 401 se corrige en `.env`; solo 403/429 son freno.

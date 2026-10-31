@@ -3,8 +3,12 @@
 ## Voz
 
 **Grabada por la persona.** Celular o micrófono a un palmo, cuarto con cosas blandas (no baño ni
-cocina), sin música de fondo. Se limpia con ffmpeg (`highpass=f=80`, `afftdn`, compresión suave)
-y se transcribe con tiempos.
+cocina), sin música de fondo. Se limpia con ffmpeg (`highpass=f=80,afftdn,dialoguenhance` y compresión
+suave), se le quitan los silencios con `auto-editor` y se transcribe con tiempos (whisper con VAD).
+
+**Voz guía local y gratis** (Kokoro, sin key): `bash scripts/kit.sh voz guion.txt audio/voz-guia.wav ef_dora`
+(español: `ef_dora` mujer, `em_alex` hombre). Sirve para cuadrar tiempos y cortes antes de grabar o de
+pagar una voz; suena a IA, así que en un anuncio se reemplaza por la voz grabada o la de ElevenLabs.
 
 **IA con ElevenLabs** (`scripts/eleven.py`, cuesta):
 - Elegir voz comparando a ciegas: varias muestras con el mismo texto en un solo archivo, sin decir
@@ -34,7 +38,7 @@ y se transcribe con tiempos.
 - Kit básico: whoosh (transiciones), hit/golpe (cortes fuertes), pop (texto que aparece),
   riser (antes de una revelación o del CTA), click/tecleo (interfaces).
 - Antes de generar, buscar libres: HyperFrames trae ~21 efectos sin conexión
-  (`npx hyperframes media-use resolve --type sfx --intent "whoosh" --candidates`); Remotion tiene
+  (`npx hyperframes media-use resolve --type sfx --intent "whoosh" --candidates --local-only`); Remotion tiene
   `@remotion/sfx`.
 - Los efectos de ElevenLabs no respetan la estructura pedida (silencios, golpes sueltos):
   recortarlos por energía. Los sintetizados con código suenan falsos.
@@ -55,6 +59,8 @@ y se transcribe con tiempos.
 ## Verificar (números, no oído cansado)
 
 - Volumen: `npx -y hyperframes audio mezcla.wav --only loudness` → −14 ±1 LUFS, pico ≤ −1 dB.
+  Para llevarlo ahí: `ffmpeg -i in.mp4 -c:v copy -af loudnorm=I=-14:TP=-1.5:LRA=11 -ar 48000 -c:a aac -b:a 192k out.mp4`
+  (o `npx hyperframes normalize-audio` para igualar una pista a otra dentro del proyecto).
 - Inteligibilidad: transcribir la mezcla con whisper y comparar con el guion; no debe faltar
   ninguna frase.
 - Voz sobre fondo: ≥ 10 dB entre 300 Hz y 4 kHz en cada frase.

@@ -24,7 +24,8 @@ paso siguiente**, el que marca `SIGUIENTE PASO`:
 3. Sin perfil → `/empezar`: el Director entrevista (objetivo, estilo, perfil).
 4. Todo listo → «¿Qué video hacemos hoy?» y `/nuevo-video`.
 
-Nunca sueltes el manual entero. Un paso a la vez, con preguntas concretas.
+Nunca sueltes el manual entero. Un paso a la vez, con preguntas concretas. Si la persona pregunta
+«¿cómo te uso?», «¿qué puedo hacer?» o se pierde: `/ayuda` (resume `COMO-USARME.md` según dónde está).
 
 ## El equipo
 
@@ -49,9 +50,14 @@ perfil/ESTILO.md        biblia de estilo sacada de sus referencias
 perfil/APRENDIZAJES.md  lo que le gustó y lo que rechazó, video a video
 referencias/<slug>/     análisis de cada referencia (video, láminas, ritmo, ANALISIS.md)
 proyectos/<AAAA-MM-DD-slug>/
-  brief.md guion.md plan.md revision.md
-  audio/  imagenes/  video/ (proyecto HyperFrames o Remotion)  out/ (renders)
+  brief.md guion.md plan.md pedidos.md (lo que hay que generar y cuesta) revision.md
+  material/<nombre>/   su material grabado, desarmado con referencia.py
+  audio/  imagenes/  video/ (proyecto HyperFrames o Remotion)
+  out/ (avance-vN.mp4, <slug>-final.mp4)  qa-vN/ (hoja de contacto de cada avance)
 ```
+
+Toda ruta de un comando se escribe desde la raíz del repo (`proyectos/<v>/out/…`), salvo los
+comandos del motor, que corren dentro de `proyectos/<v>/video/`.
 
 ## Herramientas
 
@@ -63,9 +69,14 @@ proyectos/<AAAA-MM-DD-slug>/
 | Leer texto de un cuadro | `python3 scripts/referencia.py zoom <carpeta> 0:04` |
 | Revisar nuestro render | `python3 scripts/referencia.py proyectos/<v>/out/v1.mp4 proyectos/<v>/qa-v1` |
 | Ritmo de una música | `npx hyperframes audio musica.mp3 --only bpm,beats,downbeats,sections,onsets --json` |
-| Voz, efectos, música | `python3 scripts/eleven.py tts|sfx|musica …` (cuesta) |
+| Voz guía gratis (Kokoro local) | `bash scripts/kit.sh voz guion.txt audio/voz-guia.wav ef_dora` |
+| Voz, efectos, música | `python3 scripts/eleven.py tts\|sfx\|musica …` (cuesta) |
 | Imagen puntual | `python3 scripts/imagen.py prompt.txt salida.png` (cuesta) |
 | Cuotas y permisos | `python3 scripts/puerta.py estado` |
+| Mostrarle algo a la persona | `open proyectos/<v>/out/avance-v1.mp4` · `open -R …final.mp4` (Finder) |
+| Limpiar un video entregado («limpia el disco») | `bash scripts/kit.sh limpiar proyectos/<v>` |
+| Quitar silencios de su material | `auto-editor <in> --edit audio:threshold=0.04 --margin 0.2s -o <out> --no-open` |
+| Actualizar el estudio («actualízate») | `git pull && bash scripts/kit.sh instalar` (sus carpetas no se tocan) |
 
 Antes de cada etapa lee la guía que toca: `guias/estilos.md`, `guias/ritmo-y-transiciones.md`,
 `guias/audio.md`, `guias/motores.md`, `guias/plataformas.md` y siempre `guias/lecciones.md`.
@@ -73,7 +84,9 @@ Para buscar una skill que falte: `find-skills` (`npx skills find <tema>`).
 
 ## Reglas duras
 
-1. **Dinero.** `imagen.py` y `eleven.py tts|sfx|musica` cuestan. Antes de cada lote dile a la
+1. **Dinero.** `imagen.py` y `eleven.py tts|sfx|musica` cuestan. También los comandos de HyperFrames
+   que usan la nube de HeyGen (`publish`, `cloud`, `media-use generate`, `transcribe --engine heygen`,
+   `audio --quality best`) y `remotion lambda`: nunca sin OK, y la configuración del repo pregunta. Antes de cada lote dile a la
    persona qué vas a generar, cuántas llamadas y el costo aproximado. Con su OK en el chat corre
    `python3 scripts/puerta.py permitir <openai|elevenlabs> N`. Sin permiso, la puerta se niega.
    **Los subagentes nunca corren `imagen.py`, `eleven.py` ni `puerta.py permitir`:** dejan la lista

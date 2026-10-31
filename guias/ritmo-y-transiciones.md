@@ -44,9 +44,12 @@ Primero se fija el audio (voz + música); después se cortan las imágenes encim
 | Objeto que tapa | algo cruza la cámara y al salir hay otro plano | se monta a mano con el objeto encima | igual |
 
 Notas:
-- `npx hyperframes catalog --tag transition` lista todas (son ~50); `npx hyperframes add <nombre>`.
-- En Remotion, `<TransitionSeries>` **resta** la duración de cada transición al total: suma los
-  tiempos con eso en mente o el audio se desfasa.
+- `npx hyperframes catalog --tag transition` lista todas (son ~50); `npx hyperframes add <nombre> --no-clipboard`.
+- En Remotion, `<TransitionSeries>` **resta** la duración de cada transición al total. Para que cada
+  transición arranque justo en su corte de `cues.json` y el total quede igual a `duracion × fps`:
+  duración de la escena *i* = (corte<sub>i+1</sub> − corte<sub>i</sub>) × fps + T<sub>salida i</sub>
+  (los cuadros de la transición que sale de ella). El `<Audio>` va fuera del `<TransitionSeries>`.
+  Ejemplo probado: escenas de 45 y 45 cuadros con una transición de 9 = 81 cuadros.
 - Una transición vistosa por sección como mucho; el resto, cortes secos. Si todas son vistosas,
   ninguna se nota.
 - Toda transición animada lleva sonido (whoosh, golpe, pop) salvo en el estilo minimal.

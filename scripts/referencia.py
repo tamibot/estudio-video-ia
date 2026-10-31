@@ -90,13 +90,14 @@ def bajar(src, d, ini, fin, cookies):
     r = subprocess.run(cmd + [src], capture_output=True, text=True)
     if r.returncode:
         err = r.stderr.strip()[-600:]
-        if re.search(r'HTTP Error (429|403)|Too Many Requests|rate.?limit', err, re.I):
+        # primero el login: Instagram sin sesión responde «redirected to the login page… rate-limit», y eso no es un bloqueo
+        if re.search(r'log ?in|cookies|sign in|private|confirm your age|age.?restrict', err, re.I):
+            raise SystemExit('El sitio pide iniciar sesión. Opciones: el usuario baja el video y arrastra el archivo al chat, '
+                             'o (con su OK) --cookies-navegador chrome (macOS pide permiso del Llavero: «Permitir»).\n' + err)
+        if re.search(r'HTTP Error (429|403)|Too Many Requests', err, re.I):
             puerta.bloquear(s, err[-200:])
             raise SystemExit(f'{s} devolvió bloqueo (429/403). Quedó STOP: no reintentar, avisar al usuario.\n'
                              f'Si yt-dlp está viejo, actualizarlo (brew upgrade yt-dlp) antes de desbloquear.\n{err}')
-        if re.search(r'log ?in|cookies|private|sign in|age', err, re.I):
-            raise SystemExit('El sitio pide iniciar sesión. Opciones: el usuario baja el video y pasa el archivo, '
-                             'o (con su OK) --cookies-navegador chrome.\n' + err)
         raise SystemExit(err)
     if not video.exists():  # yt-dlp a veces deja otra extensión
         otro = next(p for p in d.glob('video.*') if p.suffix not in ('.json',) and not p.name.endswith('.info.json'))
@@ -128,6 +129,12 @@ def modelo_whisper():
     return modelos[0] if modelos else None
 
 
+def vad():
+    """Silero VAD: whisper no inventa texto en silencios ni en música sin voz."""
+    v = sorted((Path.home() / 'modelos-whisper').glob('vad-silero-*.bin'))
+    return ['--vad', '-vm', str(v[-1])] if v else []
+
+
 def transcribir(d, m):
     """Arranca whisper en segundo plano; mientras, la CPU saca cuadros."""
     if (d / 'transcripcion.txt').exists():
@@ -140,7 +147,7 @@ def transcribir(d, m):
         (d / 'transcripcion.txt').write_text('(sin whisper: corre bash scripts/kit.sh instalar)\n')
         return None
     ff('-i', str(d / 'video.mp4'), '-vn', '-ac', '1', '-ar', '16000', str(d / 'audio.wav'))
-    return subprocess.Popen(['whisper-cli', '-m', str(modelo), '-l', 'auto', '-np', '-ovtt',
+    return subprocess.Popen(['whisper-cli', '-m', str(modelo), '-l', 'auto', '-np', '-ovtt', *vad(),
                              '-of', str(d / 'transcripcion'), '-f', str(d / 'audio.wav')],
                             stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
@@ -245,24 +252,35 @@ def cuadros(d, m, lista, offset):
     return len(tomas)
 
 
+def hf(d, *args):
+    """Corre `npx hyperframes … --json` (local, sin cuenta) y devuelve el JSON, o {} si falla."""
+    if not shutil.which('npx'):
+        return {}
+    r = subprocess.run(['npx', '-y', 'hyperframes@latest', *args, '--json'], cwd=d, capture_output=True, text=True)
+    try:
+        return json.loads(r.stdout[r.stdout.index('{'):])
+    except ValueError:
+        print(f'aviso: hyperframes {args[0]} falló:', r.stderr.strip()[-300:])
+        return {}
+
+
 def audio(d, m):
-    """bpm, beats, secciones, golpes y volumen con HyperFrames (local, sin cuenta)."""
-    if not m['audio'] or not shutil.which('npx'):
+    """bpm, beats, secciones, golpes y volumen."""
+    if not m['audio']:
         return {}
-    r = subprocess.run(['npx', '-y', 'hyperframes@latest', 'audio', 'video.mp4', '--only',
-                        'bpm,beats,downbeats,sections,onsets,silence,loudness', '--json'],
-                       cwd=d, capture_output=True, text=True)
-    if r.returncode:
-        print('aviso: hyperframes audio falló:', r.stderr.strip()[-300:])
-        return {}
-    return json.loads(r.stdout)['items'][0]
+    return (hf(d, 'audio', 'video.mp4', '--only', 'bpm,beats,downbeats,sections,onsets,silence,loudness').get('items') or [{}])[0]
+
+
+def luz(d):
+    """Luz, contraste, saturación, blanco y negro y temperatura del video completo (para la biblia de estilo)."""
+    return hf(d, 'measure', 'look', 'video.mp4')
 
 
 def cercano(t, tiempos):
     return min((x - t for x in tiempos), key=abs, default=None)
 
 
-def ritmo(d, m, titulo, lista, a, segmentos, offset):
+def ritmo(d, m, titulo, lista, a, segmentos, offset, look):
     bordes = [0.0] + [c['t'] for c in lista] + [m['duracion']]
     planos = [b - x for x, b in zip(bordes, bordes[1:])]
     beats = (a.get('beats') or {}).get('times') or []
@@ -293,6 +311,9 @@ def ritmo(d, m, titulo, lista, a, segmentos, offset):
         ('Cortes en un golpe fuerte (±80 ms)', pct(en_golpe) if golpes else '-'),
         ('Habla', f"{palabras / habla:.1f} palabras/s · {palabras} palabras" if habla else 'sin voz detectada'),
         ('Volumen', f"{vol.get('lufsIntegrated')} LUFS · pico {vol.get('truePeakDb')} dB" if vol else '-'),
+        ('Imagen', f"luz {look['luma']:.0f}/255 · contraste {look['contrast']:.0f} · saturación {look['saturation']:.2f} · "
+                   f"blanco y negro {100 * look['bw_share']:.0f} % · {'neutra' if abs(look['warmth']) < 10 else 'cálida' if look['warmth'] > 0 else 'fría'} ({look['warmth']:+.0f})"
+                   if 'luma' in look else '-'),
     ]
     ms = lambda x: '-' if x is None else f'{x * 1000:+.0f} ms'
     texto = [f'# Ritmo · {titulo}', '', '| Dato | Valor |', '|---|---|', *(f'| {k} | {v} |' for k, v in filas), '',
@@ -310,7 +331,8 @@ def ritmo(d, m, titulo, lista, a, segmentos, offset):
     (d / 'datos.json').write_text(json.dumps({
         'offset': offset, 'medidas': m, 'cortes': lista, 'planos_s': [round(x, 3) for x in planos], 'bpm': bpm,
         'beats': beats, 'downbeats': (a.get('downbeats') or {}).get('times') or [], 'golpes_fuertes': golpes,
-        'secciones': secciones, 'silencio': silencios, 'volumen': vol, 'segmentos': segmentos}, ensure_ascii=False))
+        'secciones': secciones, 'silencio': silencios, 'volumen': vol, 'segmentos': segmentos,
+        'imagen': {k: look.get(k) for k in ('luma', 'contrast', 'saturation', 'bw_share', 'warmth')}}, ensure_ascii=False))
     return filas
 
 
@@ -362,8 +384,9 @@ def main():
     lista = cortes(d, m, o.corte, o.cambio)
     n = cuadros(d, m, lista, offset)
     sonido = audio(d, m)
+    look = luz(d)
     segmentos = terminar_transcripcion(d, whisper, offset)
-    filas = ritmo(d, m, titulo, lista, sonido, segmentos, offset)
+    filas = ritmo(d, m, titulo, lista, sonido, segmentos, offset, look)
 
     print(f'{titulo}\n')
     print('\n'.join(f'{k:36s} {v}' for k, v in filas))

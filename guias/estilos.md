@@ -31,12 +31,15 @@ cortes de `audio/cues.json` sobre beats y downbeats.
 **Talking head dinámico.** Persona a cámara, cortes de silencios, punch-in (zoom de 1,0 a 1,1–1,2)
 en las frases clave, subtítulos palabra por palabra, B-roll o pantallas cada 3–5 s, efectos en
 cada aparición.
-→ Remotion si hay mucho material propio que cortar (`remotion-captions` para los subtítulos);
+→ Primero `auto-editor` quita silencios y tropiezos del material (ver `guias/motores.md`); después
+Remotion si hay mucho material propio que cortar (`remotion-captions` para los subtítulos) o
 HyperFrames (`caption-highlight`, `caption-pill-karaoke`, `mk-callout-highlight`) si es corto.
 
 **Cinemático.** Planos largos (3–6 s), movimiento lento y continuo, barras o 2.39:1, grano, look de
 color, música que crece, pocos textos y en serif o sans fina.
-→ `light-leak`, `organic-light-leak-overlay`, `cinematic-zoom`, `media-treatment` para el look.
+→ `light-leak`, `organic-light-leak-overlay`, `cinematic-zoom`; el look de color con el comando
+`npx hyperframes media-treatment` (no es un bloque) y `npx hyperframes grade-compare` para elegir
+entre varios looks sobre un mismo cuadro.
 
 **Meme / brain rot.** Cortes cada 0,3–0,8 s, stickers, zoom bruscos, texto con contorno, efectos
 de meme en cada golpe, voz rápida.
@@ -48,7 +51,7 @@ de meme en cada golpe, voz rápida.
 → HyperFrames (el HTML es la interfaz): `parallax-device-dive`, `iris-reveal`, `inline-highlight`.
 
 Los nombres con guiones son bloques del registro de HyperFrames: `npx hyperframes catalog <palabras>`
-para buscar, `npx hyperframes add <nombre>` para traerlo editable.
+para buscar, `npx hyperframes add <nombre> --no-clipboard` para traerlo editable.
 
 ## Imágenes generadas (OpenAI): solo cuando suman
 

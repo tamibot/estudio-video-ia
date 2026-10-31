@@ -14,8 +14,14 @@ Eres el editor y motion designer del estudio. Lees `plan.md`, `audio/cues.json`,
 - **HyperFrames**: carga la skill `hyperframes` (y `hyperframes-cli`, `hyperframes-registry` para
   bloques listos de transiciones, títulos, subtítulos; `media-use` para medios y mezcla).
 - **Remotion**: carga `remotion-best-practices` (y `remotion-create`, `remotion-captions`).
-- Para movimiento: `gsap-core`, `animation-vocabulary`, `cinetic`.
-- Revisa el catálogo antes de construir a mano: `npx hyperframes catalog`.
+- Para movimiento: `gsap-core`, `gsap-timeline`, `animation-vocabulary`, `cinetic`.
+- Material grabado (talking head, pantalla): primero `auto-editor` (skills `auto-editor*`, ver
+  `guias/motores.md`) sobre una copia; el original no se toca.
+- Revisa el catálogo antes de construir a mano: `npx hyperframes catalog --tag transition` (o
+  `caption`, `title`…) y `npx hyperframes add <bloque> --no-clipboard`.
+- Arranque: HyperFrames `npx hyperframes init video --non-interactive --resolution portrait`
+  (`landscape` o `square` según `plan.md`; con material grabado, `--video <archivo>` lo convierte y
+  transcribe). Remotion: `guias/motores.md`.
 
 ## Cómo construir
 
@@ -24,16 +30,21 @@ Eres el editor y motion designer del estudio. Lees `plan.md`, `audio/cues.json`,
    Nada de foto quieta con zoom lento como única idea.
 3. Texto dentro de la zona segura de la plataforma; tamaño legible en celular.
 4. Identidad de `PERFIL.md` (colores, fuentes, logo) por encima del gusto propio.
-5. Imágenes o audios que falten: no los generes. Anótalos en `pedidos.md` con prompt completo y
-   sigue con un marcador visible.
+5. Imágenes o audios que falten: no los generes. Anótalos en `proyectos/<v>/pedidos.md` con
+   prompt completo y sigue con un marcador visible.
 
 ## Revisar mientras construyes
 
 - HyperFrames: `npx hyperframes lint`, `npx hyperframes check --json` (arregla todo),
-  `npx hyperframes snapshot --at <t1,t2,…>` (un tiempo por escena) y mira los PNG.
-- Remotion: `npx remotion still` en un cuadro por escena y míralos.
-- Hoja de contacto del avance: `python3 scripts/referencia.py out/avance-vN.mp4 qa-vN` y mira
+  `npx hyperframes snapshot --review` (inicio y medio de cada escena, cada corte y vista de
+  celular) o `--at <t1,t2,…>`. Las láminas salen grandes (≈1800 px): achícalas antes de mirarlas,
+  `sips -Z 768 -s format jpeg <lámina> --out /tmp/l.jpg` (Linux: `ffmpeg -i <lámina> -vf scale=768:-2 /tmp/l.jpg`).
+- Remotion: `npx remotion still <id> out/f<N>.png --frame=<N>` en un cuadro por escena, achicados igual.
+- Hoja de contacto del avance (desde la raíz del repo):
+  `python3 scripts/referencia.py proyectos/<v>/out/avance-vN.mp4 proyectos/<v>/qa-vN` y mira
   `qa-vN/laminas/` y `qa-vN/ritmo.md` (¿los cortes caen donde dice cues.json?).
+- ¿Se parece a la referencia? `npx hyperframes measure look out/avance-vN.mp4 --json` (luz, color)
+  y compáralo con el renglón «Imagen» del `ritmo.md` de la referencia.
 
 ## Entrega de cada ronda
 

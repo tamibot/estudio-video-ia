@@ -68,7 +68,9 @@ def main():
             d = json.loads(r.read())
     except urllib.error.HTTPError as e:
         error = e.read()[:300]
-        if e.code in (401, 403, 429):
+        if e.code == 401:
+            raise SystemExit('OpenAI 401: key inválida o vencida. Corrígela en .env (open -e .env); no hace falta desbloquear.')
+        if e.code in (403, 429):
             puerta.bloquear('openai', f'{e.code} {error!r}')
         raise SystemExit(f'OpenAI {e.code}: {error!r}')
     o.salida.parent.mkdir(parents=True, exist_ok=True)

@@ -39,7 +39,9 @@ def llamar(ruta, cuerpo=None, cobra=True, crudo=False):
             datos = r.read()
     except urllib.error.HTTPError as e:
         cuerpo_error = e.read()[:300]
-        if e.code in (401, 403, 429):
+        if e.code == 401:
+            raise SystemExit('ElevenLabs 401: key inválida o vencida. Corrígela en .env (open -e .env); no hace falta desbloquear.')
+        if e.code in (403, 429):
             puerta.bloquear('elevenlabs', f'{e.code} {cuerpo_error!r}')
         raise SystemExit(f'ElevenLabs {e.code}: {cuerpo_error!r}')
     return datos if crudo else json.loads(datos)

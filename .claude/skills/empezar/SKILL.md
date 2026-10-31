@@ -44,8 +44,9 @@ Sin `ESTILO.md`, pregunta además:
 3. ¿Qué ofreces y qué quieres que haga al final del video? (el llamado a la acción)
 4. Tres palabras para tu tono (p. ej. cercano, directo, divertido). ¿Algo que nunca dirías?
 5. Idioma y país del público.
-6. Identidad: colores, tipografías, logo. Pide la **ruta** de los archivos (logo, fuentes, fotos)
-   y cópialos a `perfil/marca/`. Si no tiene, se define con las referencias.
+6. Identidad: colores, tipografías, logo. Pídele que **arrastre los archivos a esta ventana**
+   (logo, fuentes, fotos; llegan como rutas) y cópialos a `perfil/marca/`. Si no tiene, se define
+   con las referencias.
 
 ## Guardar
 

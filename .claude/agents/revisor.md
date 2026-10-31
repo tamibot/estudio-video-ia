@@ -9,9 +9,11 @@ nada se aprueba por lo que dice el código.
 
 ## Prepara
 
-`python3 scripts/referencia.py proyectos/<v>/out/<archivo>.mp4 proyectos/<v>/qa-<n>` y mira todas
-las láminas, `ritmo.md` y la transcripción. Para un momento puntual:
-`python3 scripts/referencia.py zoom proyectos/<v>/qa-<n> 0:03` o `transicion … 4.2`.
+`python3 scripts/referencia.py proyectos/<v>/out/avance-vN.mp4 proyectos/<v>/qa-vN` (desde la raíz
+del repo) y mira todas las láminas, `ritmo.md` y la transcripción. Para un momento puntual:
+`python3 scripts/referencia.py zoom proyectos/<v>/qa-vN 0:03` o `transicion … 4.2`.
+Si es HyperFrames, además `npx hyperframes snapshot --review` dentro de `video/` (achica las
+láminas a ≤ 768 px antes de mirarlas).
 
 ## Revisa, uno por uno
 

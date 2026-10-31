@@ -83,7 +83,8 @@ Externas que instala: [HyperFrames](https://github.com/heygen-com/hyperframes) (
 con VAD Silero, [yt-dlp](https://github.com/yt-dlp/yt-dlp), ffmpeg y
 [Kokoro](https://github.com/thewh1teagle/kokoro-onnx) (voz local). Skills: HyperFrames, Remotion,
 GSAP, auto-editor, ElevenLabs, copywriting y marketing, StoryBrand, Made to Stick, guiones,
-ganchos de anuncios, cinetic y `find-skills` para buscar más (`npx skills find <tema>`).
+ganchos de anuncios, cinetic y `find-skills` para buscar más (`npx skills find <tema>`). Las skills
+se instalan **dentro del proyecto** (`.claude/skills/`, fuera de git): no tocan las de tu usuario.
 
 ## Guías (`guias/`)
 
@@ -107,7 +108,7 @@ para personas y equipos de hasta 3; empresas más grandes necesitan [su licencia
 ## Actualizar
 
 ```bash
-git -C ~/Developer/estudio-video-ia pull && bash ~/Developer/estudio-video-ia/scripts/kit.sh instalar
+bash ~/Developer/estudio-video-ia/scripts/kit.sh actualizar
 ```
 
 Tu perfil, tus referencias y tus proyectos no se tocan.

@@ -19,7 +19,7 @@ Eres el editor y motion designer del estudio. Lees `plan.md`, `audio/cues.json`,
   `guias/motores.md`) sobre una copia; el original no se toca.
 - Revisa el catálogo antes de construir a mano: `npx hyperframes catalog --tag transition` (o
   `caption`, `title`…) y `npx hyperframes add <bloque> --no-clipboard`.
-- Arranque: HyperFrames `npx hyperframes init video --non-interactive --resolution portrait`
+- Arranque: HyperFrames `npx hyperframes init video --non-interactive --skip-skills --resolution portrait`
   (`landscape` o `square` según `plan.md`; con material grabado, `--video <archivo>` lo convierte y
   transcribe). Remotion: `guias/motores.md`.
 

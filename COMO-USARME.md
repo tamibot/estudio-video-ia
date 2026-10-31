@@ -139,10 +139,11 @@ nueva en la página del servicio y borra la anterior.
 ## 7. Actualizarme
 
 ```bash
-git -C ~/Developer/estudio-video-ia pull && bash ~/Developer/estudio-video-ia/scripts/kit.sh instalar
+bash ~/Developer/estudio-video-ia/scripts/kit.sh actualizar
 ```
 
-O dime «actualízate». Tu perfil, tus referencias y tus proyectos no se tocan.
+O dime «actualízate». Eso trae la última versión del estudio y de sus skills (viven dentro de la
+carpeta del estudio, no se mezclan con otras). Tu perfil, tus referencias y tus proyectos no se tocan.
 
 ## 8. Si algo falla
 

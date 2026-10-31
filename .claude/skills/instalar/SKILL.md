@@ -59,4 +59,8 @@ de prueba: se verifica con la primera imagen aprobada.
 | skills de animación | gsap-core, gsap-timeline, animation-vocabulary, cinetic |
 | find-skills | buscar más skills: `npx skills find <tema>` |
 
+Todas las skills quedan **dentro del proyecto**, en `.claude/skills/` (fuera de git, anotadas en
+`skills-lock.json`): no se mezclan con las de otros proyectos de la persona ni dependen de lo que
+tenga instalado en su usuario. Para traerlas a su última versión: `bash scripts/kit.sh actualizar`.
+
 Al terminar sigue con `/referencias`: «Para empezar, pásame tus referencias».

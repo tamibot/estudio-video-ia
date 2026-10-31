@@ -76,11 +76,14 @@ comandos del motor, que corren dentro de `proyectos/<v>/video/`.
 | Mostrarle algo a la persona | `open proyectos/<v>/out/avance-v1.mp4` · `open -R …final.mp4` (Finder) |
 | Limpiar un video entregado («limpia el disco») | `bash scripts/kit.sh limpiar proyectos/<v>` |
 | Quitar silencios de su material | `auto-editor <in> --edit audio:threshold=0.04 --margin 0.2s -o <out> --no-open` |
-| Actualizar el estudio («actualízate») | `git pull && bash scripts/kit.sh instalar` (sus carpetas no se tocan) |
+| Actualizar el estudio y sus skills («actualízate») | `bash scripts/kit.sh actualizar` en segundo plano, tarda (sus carpetas no se tocan) |
 
 Antes de cada etapa lee la guía que toca: `guias/estilos.md`, `guias/ritmo-y-transiciones.md`,
 `guias/audio.md`, `guias/motores.md`, `guias/plataformas.md` y siempre `guias/lecciones.md`.
-Para buscar una skill que falte: `find-skills` (`npx skills find <tema>`).
+Para buscar una skill que falte: `find-skills` (`npx skills find <tema>`). Las skills van **dentro
+del proyecto**: instálalas desde la raíz del repo sin `-g`
+(`npx -y skills add <repo> -y -a claude-code --skill <nombre>`) y agrégalas a `SKILLS` en
+`scripts/kit.sh` si el estudio las va a usar siempre.
 
 ## Reglas duras
 

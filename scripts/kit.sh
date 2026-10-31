@@ -4,6 +4,7 @@
 #   bash scripts/kit.sh instalar [--si] herramientas, modelo de whisper, voz local y skills; se puede repetir sin miedo
 #   bash scripts/kit.sh voz <texto|guion.txt> <salida.wav> [voz]   voz IA local y gratis (Kokoro; es: ef_dora, em_alex)
 #   bash scripts/kit.sh limpiar <proyectos/carpeta>                borra dependencias, cachés y temporales de un video entregado
+#   bash scripts/kit.sh actualizar      trae la última versión del estudio y de sus skills (perfil y proyectos no se tocan)
 set -u
 export PATH="/opt/homebrew/bin:/usr/local/bin:$HOME/.local/bin:$PATH"  # Homebrew recién instalado aún no está en el PATH de Claude
 RAIZ="$(cd "$(dirname "$0")/.." && pwd)"
@@ -27,11 +28,8 @@ MODELO_URL="https://huggingface.co/ggerganov/whisper.cpp/resolve/main/ggml-large
 VAD_URL="https://huggingface.co/ggml-org/whisper-vad/resolve/main/ggml-silero-v5.1.2.bin"
 VAD="$HOME/modelos-whisper/vad-silero-v5.1.2.bin"  # sin prefijo ggml-: modelo_whisper() no lo confunde
 
-tiene_skill() {
-  for d in "$HOME/.claude/skills/$1" "$RAIZ/.claude/skills/$1" "$HOME/.agents/skills/$1"; do
-    [ -f "$d/SKILL.md" ] && return 0
-  done
-  return 1
+tiene_skill() {  # solo las del proyecto: el estudio no depende de lo que haya instalado en ~/.claude
+  [ -f "$RAIZ/.claude/skills/$1/SKILL.md" ]
 }
 faltan_skills() {  # imprime los repos con alguna skill ausente
   for e in "${SKILLS[@]}"; do
@@ -59,7 +57,7 @@ estado() {
   [ -f "$VAD" ] && echo "  ✓ VAD de whisper (silencios sin texto inventado)" || { echo "  ✗ VAD de whisper"; falta=1; }
   tiene_voz && echo "  ✓ voz local gratis (Kokoro: kit.sh voz)" || { echo "  ✗ voz local (Kokoro)"; falta=1; }
   local repos; repos="$(faltan_skills)"
-  [ -z "$repos" ] && echo "  ✓ skills (HyperFrames, Remotion, guion, marketing, sonido, find-skills)" \
+  [ -z "$repos" ] && echo "  ✓ skills en el proyecto, .claude/skills (HyperFrames, Remotion, guion, marketing, sonido, find-skills)" \
     || { echo "  ✗ skills sin instalar de: $(echo $repos)"; falta=1; }
   echo "Keys en .env (opcionales; nunca en el chat):"
   key ELEVENLABS_API_KEY && echo "  ✓ ElevenLabs (voz, efectos, música)" || echo "  · ElevenLabs sin configurar: tu voz o la voz guía local, sonidos libres"
@@ -124,8 +122,9 @@ instalar() {
     for s in $mira; do tiene_skill "$s" || ok=0; done
     [ $ok = 1 ] && continue
     echo "Instalando skills de $repo…"
-    if [ "$sel" = "*" ]; then npx -y skills add "$repo" -g -y -a claude-code --skill '*'
-    else npx -y skills add "$repo" -g -y -a claude-code --skill $sel
+    # sin -g: se copian a .claude/skills/ de este repo (fuera de git) y quedan anotadas en skills-lock.json
+    if [ "$sel" = "*" ]; then (cd "$RAIZ" && npx -y skills add "$repo" -y -a claude-code --skill '*')
+    else (cd "$RAIZ" && npx -y skills add "$repo" -y -a claude-code --skill $sel)
     fi
   done
   if ! tiene_voz && command -v uv >/dev/null; then  # ~0,1 GB; el modelo (~0,3 GB) baja con la primera voz
@@ -166,5 +165,6 @@ case "${1:-estado}" in
   instalar) shift; instalar "$@" ;;
   voz) shift; voz "$@" ;;
   limpiar) shift; limpiar "$@" ;;
-  *) sed -n '2,6p' "$0"; exit 1 ;;
+  actualizar) git -C "$RAIZ" pull --ff-only && instalar && (cd "$RAIZ" && npx -y skills update -p -y) ;;  # update vuelve a clonar cada repo: tarda
+  *) sed -n '2,7p' "$0"; exit 1 ;;
 esac

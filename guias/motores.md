@@ -7,7 +7,7 @@ Los dos renderizan código a MP4 de forma determinista. Elegir uno por proyecto 
 | Qué es | HTML + CSS + GSAP renderizado a video | React renderizado a video |
 | Mejor para | motion graphics, texto cinético, anuncios, explicativos, interfaces, overlays | mucho material propio que cortar, plantillas con datos, series de videos iguales |
 | Ventajas | registro de ~450 bloques (transiciones, subtítulos, títulos), `check` y `snapshot` para que el agente vea, `audio` y `beats` integrados, estudio visual | ecosistema React, `@remotion/transitions`, `@remotion/captions`, `@remotion/sfx`, Studio con recarga en vivo |
-| Arranque | `npx hyperframes init video --non-interactive --resolution portrait` | `npx create-video@latest --yes --blank --no-tailwind video` |
+| Arranque | `npx hyperframes init video --non-interactive --skip-skills --resolution portrait` | `npx create-video@latest --yes --blank --no-tailwind video` |
 | Skills | `hyperframes`, `hyperframes-cli`, `hyperframes-registry`, `media-use` | `remotion-best-practices`, `remotion-create`, `remotion-captions` |
 | Licencia | libre | libre para personas y equipos de hasta 3; empresas más grandes, licencia de pago (remotion.pro/license) |
 
@@ -31,7 +31,7 @@ respiraciones que daban ritmo; subir `--margin` a 0,3–0,4 s si suena atropella
 
 ## Ciclo HyperFrames
 
-1. Dentro de `proyectos/<v>/`: `npx hyperframes init video --non-interactive --resolution portrait`
+1. Dentro de `proyectos/<v>/`: `npx hyperframes init video --non-interactive --skip-skills --resolution portrait`
    (`landscape`, `square`; sin `--resolution` sale 1920x1080). Con material grabado:
    `--video <archivo>` lo convierte a H.264 y lo transcribe. Crea su propio `CLAUDE.md` con el
    contrato de render: léelo.

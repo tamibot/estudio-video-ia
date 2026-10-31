@@ -4,6 +4,16 @@
 /referencias/
 /proyectos/
 
+# Skills de terceros: las instala scripts/kit.sh en .claude/skills/ de cada copia (las nuestras sí van en git)
+/.claude/skills/*
+!/.claude/skills/ayuda/
+!/.claude/skills/empezar/
+!/.claude/skills/instalar/
+!/.claude/skills/nuevo-video/
+!/.claude/skills/referencias/
+/skills-lock.json
+/.agents/
+
 # Pesado o regenerable
 node_modules/
 .hyperframes/

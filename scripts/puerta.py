@@ -5,7 +5,8 @@ ElevenLabs y OpenAI. Ningún script llama a esos servicios sin pasar por gastar(
 - Contador compartido entre procesos en ~/.cache/estudio-video-ia/<servicio>.json, con lock,
   pausa mínima entre llamadas y tope diario. El límite lo rompe la SUMA de procesos: por eso es uno solo.
 - Falla CERRADO: si el contador no se puede leer o existe el STOP del servicio, no se llama.
-- Un 401/403/429 crea STOP: no se reintenta hasta que una persona confirme que pasó el bloqueo.
+- Un 403/429 crea STOP: no se reintenta hasta que una persona confirme que pasó el bloqueo
+  (un 401 es una key mal puesta: se corrige en .env, no se bloquea).
 - Lo que cuesta dinero necesita permiso por lote: el director pregunta al usuario y recién
   corre `puerta.py permitir <servicio> N`. Cada llamada pagada gasta 1; en 0 se niega.
 
@@ -28,6 +29,8 @@ LIMITES = {
     'instagram': (8, 30, False),
     'tiktok': (5, 40, False),
     'web': (5, 40, False),
+    'wikimedia': (1, 300, False),   # pinturas y fotos de dominio público (Commons)
+    'pexels': (2, 150, False),      # B-roll de stock; la API permite 200/hora
     'elevenlabs': (2, 40, True),
     'openai': (2, 20, True),
 }

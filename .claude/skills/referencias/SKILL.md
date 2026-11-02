@@ -1,6 +1,6 @@
 ---
 name: referencias
-description: Paso 1 · Referencias. Pide a la persona sus videos de referencia (links de Instagram, TikTok, YouTube o archivos), los desarma con scripts/referencia.py (planos, cortes, transiciones, ritmo contra la música, transcripción), lanza analistas en paralelo y consolida la biblia de estilo en perfil/ESTILO.md. Usar cuando dice «dame tus referencias», «mira este video», «quiero que se vea como esto», «analiza este reel», o pega un link de video.
+description: Paso 1 · Referencias y entrenamiento de estilo. Pide a la persona sus videos de referencia (links de Instagram, TikTok, YouTube o archivos), los desarma con scripts/referencia.py (planos, cortes, transiciones, ritmo contra la música, transcripción), lanza analistas en paralelo y consolida la biblia de estilo en perfil/ESTILO.md; en modo «entrenar» (hasta 20 videos de un creador) arma además el tablero en Figma, la biblioteca de animaciones y una skill del estilo. Usar también cuando dice «entrena este estilo», «quiero editar como <creador>». Usar cuando dice «dame tus referencias», «mira este video», «quiero que se vea como esto», «analiza este reel», o pega un link de video.
 ---
 
 # Paso 1 · Referencias → biblia de estilo
@@ -14,6 +14,15 @@ ritmo se entienden solos, y la entrevista de `/empezar` queda corta.
 o YouTube, o archivos). Por cada uno dime qué te gusta: el ritmo, las transiciones, los textos,
 el sonido, el gancho…»
 Si solo pasa links sin decir qué le gusta, pregunta una vez; si no sabe, el análisis lo propone.
+
+Dos profundidades (método completo en `guias/entrenar-un-estilo.md`):
+- **Rápida** (3-5 videos de lo que le gusta): termina en `perfil/ESTILO.md`.
+- **Entrenar** (quiere editar *como un creador puntual*): pídele **hasta 20 videos** de ese creador,
+  los más cuidados (mínimo 5). Termina además en el tablero de Figma, la biblioteca de animaciones y
+  la skill `estilo-<creador>`.
+- **Atajo:** si lo que trae es un talking head educativo minimal (fondos de papel, texto de dos
+  fuentes, pinturas, líneas azules), el estilo ya está entrenado: skill `estilo-minimal-premium` y
+  `plantillas/minimal-premium/`. Muéstrale el resumen de la skill y pregúntale si es eso.
 
 ## 2. Desarmar (por la puerta, máximo 3 a la vez)
 
@@ -35,7 +44,9 @@ python3 scripts/referencia.py '<url>' referencias/<slug> --inicio 1:20 --fin 2:0
 ## 3. Analizar (subagentes en paralelo, hasta 3)
 
 Lanza un agente `analista-referencias` por video con: la carpeta, lo que a la persona le gusta de
-ese video y la ruta de `perfil/PERFIL.md` si ya existe. Cada uno escribe `referencias/<slug>/ANALISIS.md`.
+ese video, la ruta de `perfil/PERFIL.md` si ya existe y, en modo entrenar, el número de video
+(`V01`…`V20`) y la orden de llenar la biblioteca. Cada uno escribe `referencias/<slug>/ANALISIS.md`
+(y en modo entrenar, sus carpetas en `perfil/biblioteca/`).
 
 ## 4. Consolidar `perfil/ESTILO.md`
 
@@ -58,6 +69,22 @@ Muéstrale el resumen en 8-10 líneas con la pregunta: «¿Esto es lo que te gus
 cambiarías?». Ajusta y guarda. Luego, si no hay `perfil/PERFIL.md`: «Ahora cuéntame de ti y de
 tus videos» → `/empezar`. Si ya hay perfil: «Listo. ¿Qué video hacemos?» → `/nuevo-video`.
 Más referencias después: se agregan igual y se actualiza `ESTILO.md`.
+
+## 5. Solo en modo entrenar: tablero en Figma y skill del estilo
+
+**Tablero.** Si Figma está conectado (herramientas `figma`; carga la skill `figma-use` antes de
+cualquier `use_figma`): crea un archivo «Tablero de estilo · <creador>» en el equipo de la persona,
+sube una captura de cada escena buena (de `laminas/`, `zoom/` y `perfil/biblioteca/*/diseno.jpg`),
+agrúpalas por principio (tipo de escena) y anota en cada grupo qué la compone: fuentes, colores,
+tamaños, patrón, movimiento, cuándo se usa. Pocas llamadas grandes, no muchas chicas (Figma limita
+la cuota); ante un límite, parar y avisar. Muéstrale el enlace: la persona corrige el tablero, que es
+la parte más importante del entrenamiento. Sin Figma, sigue con la biblioteca y la skill.
+Las capturas son de otro creador: el tablero queda privado, nunca en git.
+
+**Skill.** Escribe `.claude/skills/estilo-<creador>/SKILL.md` siguiendo el modelo de
+`estilo-minimal-premium`: principios y cuándo se usa cada uno, tokens medidos, lógica del texto,
+texturas, números de ritmo, reglas de planificación, sonido y correcciones típicas. Queda fuera de
+git (es suyo). En `ESTILO.md`, una línea que apunte a la skill y a la biblioteca.
 
 ## Cerrar
 

@@ -28,6 +28,12 @@ cambian de escala, color o posición en cada golpe. Planos de 0,5–1,5 s.
 → HyperFrames: `caption-kinetic-slam`, `text-match-cut`, `type-match-cut`, `mk-clone-wall-transition`;
 cortes de `audio/cues.json` sobre beats y downbeats.
 
+**Minimal premium (talking head educativo).** Cara del orador alternada con escenas sobre papel:
+texto cinemático de dos fuentes (Inter + Playfair Italic), pinturas, líneas azules que guían la
+mirada, ilustraciones con textura, gráficos con cuadrícula que brilla. Plano medio ~2 s, cortes secos,
+movimiento dentro de la escena.
+→ skill `estilo-minimal-premium` (10 tipos de escena, tokens medidos) y `plantillas/minimal-premium/`.
+
 **Talking head dinámico.** Persona a cámara, cortes de silencios, punch-in (zoom de 1,0 a 1,1–1,2)
 en las frases clave, subtítulos palabra por palabra, B-roll o pantallas cada 3–5 s, efectos en
 cada aparición.

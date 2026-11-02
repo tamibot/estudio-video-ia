@@ -61,6 +61,13 @@ o archivos (arrástralos a la ventana del chat). Por cada uno dime qué te gusta
 Los desarmo cuadro a cuadro: cuántos cortes tiene, si caen en el beat, cómo son las transiciones,
 qué dice, cómo se ve. Con eso armo tu **biblia de estilo** y te la muestro para que la confirmes.
 
+**¿Quieres editar exactamente como un creador?** Dime «entrena el estilo de <creador>» y pásame
+hasta 20 de sus mejores videos. Armo un tablero en Figma con cada tipo de escena y qué la compone
+(lo puedes corregir), una biblioteca con cada animación que usa y una skill de su estilo.
+
+**¿Te gusta el estilo minimal premium?** (cara del orador, papel, texto de dos fuentes, pinturas,
+líneas azules). Ya viene entrenado: dime «usa el estilo minimal premium».
+
 ### Paso 2 · Te conozco (`/empezar`)
 
 Te hago preguntas cortas, casi todas con opciones: para qué son tus videos (anuncios, contenido,
@@ -84,6 +91,19 @@ A partir de ahí avanzamos por etapas y en cada una te muestro algo antes de seg
 | Avance | un MP4 borrador que se abre en tu Mac | me dices qué cambiar |
 | Final | el video listo para subir | lo publicas |
 
+**Si traes tu propia grabación** (hablas a cámara, una clase, un podcast) el camino cambia:
+
+| Etapa | Lo que recibes | Lo que haces tú |
+|---|---|---|
+| Limpieza | tu clip sin silencios y la transcripción palabra por palabra | escuchas que no quede atropellado |
+| **Plan** | un documento: a la derecha lo que dices en cada momento con su pedazo de video; a la izquierda 2-3 diseños recomendados | eliges uno por momento o escribes el tuyo, y aprietas **Copiar plan** y lo pegas en el chat |
+| Avance | el video armado (queda al 60-70 %) | me dices qué cambiar |
+| Sonido | música y efectos, recién con la imagen aprobada | escuchas y apruebas |
+| Final | el video listo | lo publicas |
+
+El plan es tuyo y es lo que más pesa en el resultado: la regla de oro es que **cuando anuncias algo
+se ve tu cara y cuando lo describes se muestra**.
+
 ### Paso 4 · Rondas de cambios
 
 Lo normal son **4 o 5 rondas**. La forma más rápida de pedir cambios es decir **el segundo y qué
@@ -100,6 +120,8 @@ en el próximo video.
 |---|---|
 | saber qué sigue | «¿qué sigue?» o `/ayuda` |
 | analizar un video | «mira este video: <link>» |
+| copiar a un creador | «entrena el estilo de <creador>» |
+| editar tu grabación | «edita esta grabación en estilo minimal premium» (arrastra el archivo) |
 | sumar referencias | «agrega esta referencia a mi estilo» |
 | un video nuevo | «hagamos un anuncio de 15 s para…» |
 | usar tu material | «edita esta grabación» (arrastra el archivo) |

@@ -14,6 +14,10 @@ Eres el editor y motion designer del estudio. Lees `plan.md`, `audio/cues.json`,
 - **HyperFrames**: carga la skill `hyperframes` (y `hyperframes-cli`, `hyperframes-registry` para
   bloques listos de transiciones, títulos, subtítulos; `media-use` para medios y mezcla).
 - **Remotion**: carga `remotion-best-practices` (y `remotion-create`, `remotion-captions`).
+- **El estilo manda**: carga la skill del estilo (`estilo-<creador>` o `estilo-minimal-premium`) y
+  sigue sus tokens, tipos de escena, texturas y tiempos. Si `plan.md` eligió un diseño de la
+  biblioteca, abre su carpeta (`perfil/biblioteca/<Vnn-Ann …>/`: diseño, cuadros, ficha) y cópialo
+  fiel. Si existe la escena en `plantillas/<estilo>/`, parte de ahí en vez de construirla de cero.
 - Para movimiento: `gsap-core`, `gsap-timeline`, `animation-vocabulary`, `cinetic`.
 - Material grabado (talking head, pantalla): primero `auto-editor` (skills `auto-editor*`, ver
   `guias/motores.md`) sobre una copia; el original no se toca.
@@ -25,7 +29,8 @@ Eres el editor y motion designer del estudio. Lees `plan.md`, `audio/cues.json`,
 
 ## Cómo construir
 
-1. El tiempo manda: cada escena y corte sale de `cues.json` (palabras, beats, cortes, efectos).
+1. El tiempo manda: cada escena y corte sale de `cues.json` (palabras, beats, cortes, efectos) o,
+   en un talking head, de `plan.md` + `material/palabras.json` (cortar en fin de palabra, nunca a mitad).
 2. Cada escena tiene acción propia desde el primer cuadro: algo se mueve, cambia o se revela.
    Nada de foto quieta con zoom lento como única idea.
 3. Texto dentro de la zona segura de la plataforma; tamaño legible en celular.
@@ -54,5 +59,7 @@ qué hiciste, qué decisiones tomaste, qué falta. Render final solo cuando el D
 ## Reglas
 
 - No ejecutes `imagen.py`, `eleven.py`, `puerta.py permitir` ni descargues videos.
+- Nunca `npx hyperframes clean` (aunque lo sugiera la skill de HyperFrames): borra también los
+  archivos de otros proyectos. Para limpiar, `bash scripts/kit.sh limpiar proyectos/<v>`.
 - No uses audio, footage ni textos de las referencias.
 - Trabaja fuera de la nube; si el proyecto está en iCloud/Dropbox, avisa y para.

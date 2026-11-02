@@ -1,0 +1,150 @@
+<!--
+  Escena 7 · Ilustración central (minimal premium)
+  Papel con grano; abajo una figura azul de círculos concéntricos de línea fina con textura de pincel
+  y halo, que se revela desde abajo con borde rugoso y se funde hacia arriba; texto cinemático arriba.
+  Editar: el texto con data-t = segundo de cada palabra (.chica izq/der, .clave; "serif" = Playfair).
+          La figura es el <g class="figura"> del SVG: cambia los círculos por cualquier trazo
+          (stroke="currentColor"), la textura y el revelado se aplican solos.
+          REVELADO = segundos [inicio, fin] del revelado rugoso.
+-->
+<template>
+  <style>
+    @font-face { font-family: "Inter"; src: url("assets/fuentes/inter-latin.woff2") format("woff2"); font-weight: 100 900; font-style: normal; }
+    @font-face { font-family: "Playfair Display"; src: url("assets/fuentes/playfair-italic-latin.woff2") format("woff2"); font-weight: 400 900; font-style: italic; }
+    #root {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      background: #EEEBEF;
+      --papel: #EEEBEF; --tinta: #08080A; --azul: #1B42D3;
+    }
+    .capa { position: absolute; inset: 0; }
+    /* La cámara lleva papel, textura, figura y texto juntos. */
+    .camara { position: absolute; inset: -80px; }
+    .fondo { background: url("assets/texturas/papel.svg") center / cover; }
+    .grano { background: url("assets/texturas/grano.svg") 0 0 / 512px 512px repeat; opacity: 0.06; }
+    .ilustracion { position: absolute; left: 80px; top: 700px; width: 1080px; height: 1300px; overflow: visible; color: var(--azul); }
+    .texto { position: absolute; left: 0; right: 0; top: 640px; display: flex; justify-content: center; }
+    .bloque { display: flex; flex-direction: column; align-items: center; transform: translateY(-50%); color: var(--tinta); }
+    .chica { font: 500 48px/1.15 "Inter", sans-serif; letter-spacing: -0.01em; opacity: 0.82; white-space: nowrap; }
+    .chica.izq { align-self: flex-start; padding-left: 0.12em; }
+    .chica.der { align-self: flex-end; padding-right: 0.12em; }
+    .clave { font: 800 170px/0.92 "Inter", sans-serif; letter-spacing: -0.035em; white-space: nowrap; width: max-content; }
+    .clave.serif { font: italic 700 176px/1 "Playfair Display", serif; letter-spacing: -0.01em; color: var(--azul); }
+    .palabra { display: inline-block; }
+  </style>
+
+  <div id="root" data-composition-id="ilustracion-central" data-width="1080" data-height="1920">
+    <div class="camara">
+      <div class="capa fondo"></div>
+      <div class="capa grano"></div>
+      <svg class="ilustracion" viewBox="0 0 1080 1300">
+        <defs>
+          <!-- Pincel: bordes temblorosos + poros secos + halo. Semillas fijas: igual en cada cuadro. -->
+          <filter id="ic-pincel" x="-15%" y="-15%" width="130%" height="130%" color-interpolation-filters="sRGB">
+            <feTurbulence type="fractalNoise" baseFrequency="0.03" numOctaves="3" seed="9" result="ondas"></feTurbulence>
+            <feDisplacementMap in="SourceGraphic" in2="ondas" scale="10" xChannelSelector="R" yChannelSelector="G" result="trazo"></feDisplacementMap>
+            <feTurbulence type="fractalNoise" baseFrequency="0.5" numOctaves="2" seed="17" result="poros"></feTurbulence>
+            <feColorMatrix in="poros" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  2.6 0 0 0 -0.6" result="seco"></feColorMatrix>
+            <feComposite in="trazo" in2="seco" operator="in" result="pintado"></feComposite>
+            <feGaussianBlur in="trazo" stdDeviation="24" result="difuso"></feGaussianBlur>
+            <feColorMatrix in="difuso" type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 0.75 0" result="halo"></feColorMatrix>
+            <feMerge><feMergeNode in="halo"></feMergeNode><feMergeNode in="pintado"></feMergeNode></feMerge>
+          </filter>
+          <!-- Borde rugoso del revelado -->
+          <filter id="ic-borde" x="-20%" y="-20%" width="140%" height="140%">
+            <feTurbulence type="fractalNoise" baseFrequency="0.009 0.022" numOctaves="3" seed="4" result="r"></feTurbulence>
+            <feDisplacementMap in="SourceGraphic" in2="r" scale="120" xChannelSelector="R" yChannelSelector="G"></feDisplacementMap>
+          </filter>
+          <!-- Fundido hacia arriba (fijo) -->
+          <linearGradient id="ic-funde" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="0" y2="1300">
+            <stop offset="0.08" stop-color="#000"></stop>
+            <stop offset="0.42" stop-color="#fff"></stop>
+          </linearGradient>
+          <mask id="ic-revelado" maskUnits="userSpaceOnUse" x="-200" y="-200" width="1480" height="1700">
+            <rect class="cortina" x="-200" y="900" width="1480" height="2200" fill="url(#ic-funde)" filter="url(#ic-borde)"></rect>
+          </mask>
+        </defs>
+        <g mask="url(#ic-revelado)">
+          <g class="figura" filter="url(#ic-pincel)" fill="none" stroke="currentColor" stroke-width="9">
+            <circle cx="540" cy="760" r="34"></circle>
+            <circle cx="540" cy="760" r="88"></circle>
+            <circle cx="540" cy="760" r="142"></circle>
+            <circle cx="540" cy="760" r="196"></circle>
+            <circle cx="540" cy="760" r="250"></circle>
+            <circle cx="540" cy="760" r="304"></circle>
+            <circle cx="540" cy="760" r="358"></circle>
+            <circle cx="540" cy="760" r="412"></circle>
+            <circle cx="540" cy="760" r="466"></circle>
+          </g>
+        </g>
+      </svg>
+      <div class="texto">
+        <div class="bloque">
+          <span class="chica izq" data-t="0.08 0.22 0.40">un hábito pequeño</span>
+          <span class="clave" data-t="0.66">crece</span>
+          <span class="chica der" data-t="0.88 0.98">en círculos</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (() => {
+      const raiz = document.querySelector('[data-composition-id="ilustracion-central"]');
+      const ANCHO_MAX = 860;
+      const REVELADO = [0, 1.8];   // segundos: el revelado rugoso empieza en el cuadro 1 y termina aquí
+      const DURACION = 3;          // igual al data-duration del host
+
+      // --- común a las escenas minimal premium ---
+      const partirPalabras = (r) => {
+        const out = [];
+        r.querySelectorAll("[data-t]").forEach((linea) => {
+          const t = linea.dataset.t.trim().split(/\s+/).map(Number);
+          const textos = linea.textContent.trim().split(/\s+/);
+          linea.textContent = "";
+          textos.forEach((txt, i) => {
+            const s = document.createElement("span");
+            s.className = "palabra";
+            s.textContent = txt;
+            linea.append(s);
+            if (i < textos.length - 1) linea.append(" ");
+            // ponytail: si faltan tiempos, las palabras sobrantes van cada 0,12 s
+            out.push({ el: s, t: t[i] ?? t[t.length - 1] + 0.12 * (i - t.length + 1), clave: linea.classList.contains("clave") });
+          });
+        });
+        return out;
+      };
+      const ajustarClaves = (r, max) =>
+        r.querySelectorAll(".clave").forEach((el) => {
+          if (el.offsetWidth > max) el.style.fontSize = (parseFloat(getComputedStyle(el).fontSize) * max) / el.offsetWidth + "px";
+        });
+      const entrarPalabras = (tl, palabras) =>
+        palabras.filter((p) => p.t > 0).forEach(({ el, t, clave }) => { // t = 0: ya está en pantalla en el cuadro 1
+          tl.fromTo(el, { opacity: 0, filter: "blur(10px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.2, ease: "power2.out" }, t);
+          if (clave) tl.fromTo(el, { scale: 0.96 }, { scale: 1, duration: 0.25, ease: "power3.out" }, t);
+        });
+      // El runtime oculta con display:none las escenas que no están en pantalla: se mide mostrándola un instante.
+      const medir = (r, fn) => {
+        const s = r.getAttribute("style");
+        r.style.setProperty("display", "block", "important");
+        try { return fn(); } finally { s == null ? r.removeAttribute("style") : r.setAttribute("style", s); }
+      };
+      const fuentes = Promise.all(["500 40px Inter", "800 40px Inter", "italic 700 40px 'Playfair Display'"].map((f) => document.fonts.load(f))).catch(() => {});
+      // --- fin común ---
+
+      const palabras = partirPalabras(raiz);
+      fuentes.then(() => {
+        medir(raiz, () => ajustarClaves(raiz, ANCHO_MAX));
+        const tl = gsap.timeline({ paused: true });
+        // Revelado rugoso desde abajo: la cortina sube; ya asoma algo en el cuadro 1.
+        tl.fromTo(raiz.querySelector(".cortina"), { attr: { y: 1050 } }, { attr: { y: -120 }, duration: REVELADO[1] - REVELADO[0], ease: "power2.out" }, REVELADO[0]);
+        // Deriva de cámara: acercamiento lento de papel + figura + texto
+        tl.fromTo(raiz.querySelector(".camara"), { scale: 1, y: 0 }, { scale: 1.05, y: -30, duration: DURACION, ease: "sine.inOut" }, 0);
+        entrarPalabras(tl, palabras);
+        window.__timelines = window.__timelines || {};
+        window.__timelines["ilustracion-central"] = tl;
+      });
+    })();
+  </script>
+</template>

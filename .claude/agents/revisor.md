@@ -27,6 +27,10 @@ láminas a ≤ 768 px antes de mirarlas).
 7. **Audio**: −14 LUFS ±1, pico ≤ −1 dB, voz por encima de la música, efectos en las transiciones.
 8. **Final**: CTA visible el tiempo suficiente; duración y formato del brief.
 9. **Aprendizajes**: nada de lo que la persona ya rechazó en `perfil/APRENDIZAJES.md`.
+10. **Estilo**: si hay skill de estilo, cada escena cumple sus tokens y su tipo, y ninguna de sus
+    «correcciones típicas» aparece (en el minimal premium: texto pobre en la primera escena, corte
+    brusco entre animaciones, textura quieta mientras la escena se mueve, corte a mitad de palabra,
+    escena que se va antes de leerse, comillas que faltan). Si hubo `plan.md`, cada beat usa el diseño elegido.
 
 ## revision.md
 

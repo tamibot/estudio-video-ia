@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+  <!-- Grano fino, gris opaco y repetible (stitchTiles). La fuerza se da con la opacidad de la capa. Semilla fija: igual en cada cuadro. -->
+  <filter id="g" filterUnits="userSpaceOnUse" x="0" y="0" width="512" height="512" color-interpolation-filters="sRGB">
+    <feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="2" seed="4" stitchTiles="stitch"/>
+    <feColorMatrix type="matrix" values="3 0 0 0 -1  3 0 0 0 -1  3 0 0 0 -1  0 0 0 0 1"/>
+  </filter>
+  <rect width="512" height="512" filter="url(#g)"/>
+</svg>

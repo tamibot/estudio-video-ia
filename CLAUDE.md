@@ -48,10 +48,14 @@ le muestras a la persona el resultado y le pides el OK de cada etapa.
 perfil/PERFIL.md        quién es, objetivo, público, tono, estilo elegido
 perfil/ESTILO.md        biblia de estilo sacada de sus referencias
 perfil/APRENDIZAJES.md  lo que le gustó y lo que rechazó, video a video
+perfil/biblioteca/      animaciones de sus referencias (modo entrenar): V01-A01 …/diseno, cuadros, ficha
+.claude/skills/estilo-<creador>/  skill de un estilo entrenado (fuera de git)
 referencias/<slug>/     análisis de cada referencia (video, láminas, ritmo, ANALISIS.md)
 proyectos/<AAAA-MM-DD-slug>/
-  brief.md guion.md plan.md pedidos.md (lo que hay que generar y cuesta) revision.md
-  material/<nombre>/   su material grabado, desarmado con referencia.py
+  brief.md guion.md plan.json → plan.html (documento de planificación) → plan.md
+  pedidos.md (lo que hay que generar y cuesta) revision.md
+  material/            su material grabado (bruto, limpio, palabras.json) y su análisis
+  assets/              pinturas, fotos, B-roll con fuentes.json (créditos)
   audio/  imagenes/  video/ (proyecto HyperFrames o Remotion)
   out/ (avance-vN.mp4, <slug>-final.mp4)  qa-vN/ (hoja de contacto de cada avance)
 ```
@@ -68,6 +72,8 @@ comandos del motor, que corren dentro de `proyectos/<v>/video/`.
 | Ver una transición de cerca | `python3 scripts/referencia.py transicion <carpeta> 3.2 7.8` |
 | Leer texto de un cuadro | `python3 scripts/referencia.py zoom <carpeta> 0:04` |
 | Revisar nuestro render | `python3 scripts/referencia.py proyectos/<v>/out/v1.mp4 proyectos/<v>/qa-v1` |
+| Documento de planificación (talking head) | `python3 scripts/plan_edicion.py proyectos/<v>/plan.json` → `open proyectos/<v>/plan.html` |
+| Pinturas, fotos y B-roll libres | `python3 scripts/assets.py pinturas\|fotos\|broll "<búsqueda>" proyectos/<v>/assets/<tipo>` |
 | Ritmo de una música | `npx hyperframes audio musica.mp3 --only bpm,beats,downbeats,sections,onsets --json` |
 | Voz guía gratis (Kokoro local) | `bash scripts/kit.sh voz guion.txt audio/voz-guia.wav ef_dora` |
 | Voz, efectos, música | `python3 scripts/eleven.py tts\|sfx\|musica …` (cuesta) |
@@ -77,6 +83,9 @@ comandos del motor, que corren dentro de `proyectos/<v>/video/`.
 | Limpiar un video entregado («limpia el disco») | `bash scripts/kit.sh limpiar proyectos/<v>` |
 | Quitar silencios de su material | `auto-editor <in> --edit audio:threshold=0.04 --margin 0.2s -o <out> --no-open` |
 | Actualizar el estudio y sus skills («actualízate») | `bash scripts/kit.sh actualizar` en segundo plano, tarda (sus carpetas no se tocan) |
+
+Estilos listos: `estilo-minimal-premium` (talking head educativo de papel, pinturas y líneas azules;
+plantilla en `plantillas/minimal-premium/`). Cómo entrenar uno nuevo y editar con él: `guias/entrenar-un-estilo.md`.
 
 Antes de cada etapa lee la guía que toca: `guias/estilos.md`, `guias/ritmo-y-transiciones.md`,
 `guias/audio.md`, `guias/motores.md`, `guias/plataformas.md` y siempre `guias/lecciones.md`.

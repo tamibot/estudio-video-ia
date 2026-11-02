@@ -1,0 +1,164 @@
+<!--
+  Escena 4 · Línea + texto (minimal premium)
+  Fondo oscuro con grano y renglones; una línea azul se dibuja, llega a una frase que la interrumpe
+  y sigue hacia la siguiente. La cámara sigue a la línea.
+  Editar: cada .frase es una parada de la línea (agrega o quita las que quieras).
+          Cada línea de texto lleva data-t = segundo de cada palabra, en orden.
+          La línea se dibuja sola entre la última palabra de una frase y la primera de la siguiente.
+          Medidas de la línea: constantes al inicio del script (altura, aire, largo de cada tramo, duración).
+-->
+<template>
+  <style>
+    @font-face { font-family: "Inter"; src: url("assets/fuentes/inter-latin.woff2") format("woff2"); font-weight: 100 900; font-style: normal; }
+    @font-face { font-family: "Playfair Display"; src: url("assets/fuentes/playfair-italic-latin.woff2") format("woff2"); font-weight: 400 900; font-style: italic; }
+    #root {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      background: #08080A;
+      --tinta: #08080A; --azul: #1B42D3; --blanco: #F5F4F2;
+    }
+    .capa { position: absolute; inset: 0; }
+    /* El mundo es más ancho que el cuadro (el script fija su ancho); fondo, textura, línea y texto viajan juntos. */
+    .mundo { position: absolute; left: 0; top: 0; height: 1920px; width: 4000px; }
+    .fondo { background: radial-gradient(ellipse 60% 70% at 50% 50%, #111113 0%, var(--tinta) 100%); }
+    .renglones { background: repeating-linear-gradient(to bottom, transparent 0 103px, rgba(245, 244, 242, 0.055) 103px 105px); }
+    .grano { background: url("assets/texturas/grano.svg") 0 0 / 512px 512px repeat; opacity: 0.09; }
+    .trazo { position: absolute; left: 0; top: 0; overflow: visible; filter: drop-shadow(0 0 9px rgba(27, 66, 211, 0.95)) drop-shadow(0 0 22px rgba(27, 66, 211, 0.5)); }
+    .tramo { fill: none; stroke: var(--azul); stroke-width: 9; stroke-linecap: round; }
+    .frase { position: absolute; display: flex; flex-direction: column; align-items: flex-start; color: var(--blanco); }
+    .chica { font: 500 46px/1.2 "Inter", sans-serif; letter-spacing: -0.01em; opacity: 0.8; white-space: nowrap; padding-left: 0.1em; }
+    .clave { font: 800 150px/0.95 "Inter", sans-serif; letter-spacing: -0.03em; white-space: nowrap; width: max-content; }
+    .clave.serif { font: italic 700 160px/1.05 "Playfair Display", serif; letter-spacing: -0.01em; }
+    .palabra { display: inline-block; }
+  </style>
+
+  <div id="root" data-composition-id="linea-texto" data-width="1080" data-height="1920">
+    <div class="lente capa">
+      <div class="mundo">
+        <div class="capa fondo"></div>
+        <div class="capa renglones"></div>
+        <div class="capa grano"></div>
+        <svg class="trazo" width="4000" height="1920" viewBox="0 0 4000 1920">
+          <g class="punta">
+            <circle r="14" fill="#1B42D3"></circle>
+            <circle r="5" fill="#F5F4F2" opacity="0.6"></circle>
+          </g>
+        </svg>
+        <div class="frase">
+          <span class="chica" data-t="0.70">primero,</span>
+          <span class="clave" data-t="0.86">empieza</span>
+        </div>
+        <div class="frase">
+          <span class="chica" data-t="1.72">después,</span>
+          <span class="clave serif" data-t="1.88">repite</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (() => {
+      const raiz = document.querySelector('[data-composition-id="linea-texto"]');
+      const ANCHO_MAX = 860;
+      const DURACION = 3;              // igual al data-duration del host
+      const LINEA_Y = 1010;            // altura de la línea en el cuadro
+      const INICIO_X = 70;             // donde nace la línea (visible desde el cuadro 1)
+      const AIRE = 46;                 // espacio entre la línea y el texto
+      const TRAMOS = [520, 400, 1100]; // largo de cada tramo: antes de la frase 1, entre frases…, después de la última
+      const DERIVA_FINAL = 220;        // en el último tramo la cámara solo se corre esto: la última frase sigue en cuadro y la línea sale por la derecha
+
+      // --- común a las escenas minimal premium ---
+      const partirPalabras = (r) => {
+        const out = [];
+        r.querySelectorAll("[data-t]").forEach((linea) => {
+          const t = linea.dataset.t.trim().split(/\s+/).map(Number);
+          const textos = linea.textContent.trim().split(/\s+/);
+          linea.textContent = "";
+          textos.forEach((txt, i) => {
+            const s = document.createElement("span");
+            s.className = "palabra";
+            s.textContent = txt;
+            linea.append(s);
+            if (i < textos.length - 1) linea.append(" ");
+            // ponytail: si faltan tiempos, las palabras sobrantes van cada 0,12 s
+            out.push({ el: s, t: t[i] ?? t[t.length - 1] + 0.12 * (i - t.length + 1), clave: linea.classList.contains("clave") });
+          });
+        });
+        return out;
+      };
+      const ajustarClaves = (r, max) =>
+        r.querySelectorAll(".clave").forEach((el) => {
+          if (el.offsetWidth > max) el.style.fontSize = (parseFloat(getComputedStyle(el).fontSize) * max) / el.offsetWidth + "px";
+        });
+      const entrarPalabras = (tl, palabras) =>
+        palabras.filter((p) => p.t > 0).forEach(({ el, t, clave }) => { // t = 0: ya está en pantalla en el cuadro 1
+          tl.fromTo(el, { opacity: 0, filter: "blur(10px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.2, ease: "power2.out" }, t);
+          if (clave) tl.fromTo(el, { scale: 0.96 }, { scale: 1, duration: 0.25, ease: "power3.out" }, t);
+        });
+      // El runtime oculta con display:none las escenas que no están en pantalla: se mide mostrándola un instante.
+      const medir = (r, fn) => {
+        const s = r.getAttribute("style");
+        r.style.setProperty("display", "block", "important");
+        try { return fn(); } finally { s == null ? r.removeAttribute("style") : r.setAttribute("style", s); }
+      };
+      const fuentes = Promise.all(["500 40px Inter", "800 40px Inter", "italic 700 40px 'Playfair Display'"].map((f) => document.fonts.load(f))).catch(() => {});
+      // --- fin común ---
+
+      const palabras = partirPalabras(raiz);
+      fuentes.then(() => {
+        medir(raiz, () => ajustarClaves(raiz, ANCHO_MAX));
+        const mundo = raiz.querySelector(".mundo");
+        const svg = raiz.querySelector(".trazo");
+        const punta = raiz.querySelector(".punta");
+        const frases = [...raiz.querySelectorAll(".frase")];
+        const tiempos = (f) => palabras.filter((p) => f.contains(p.el)).map((p) => p.t);
+
+        // 1) Maquetar: tramo, aire, frase, aire, tramo… sobre la misma altura.
+        let x = INICIO_X;
+        const tramos = [];
+        medir(raiz, () => frases.forEach((f, i) => {
+          const fin = x + (TRAMOS[i] ?? TRAMOS[TRAMOS.length - 1]);
+          tramos.push({ x0: x, x1: fin, hasta: Math.min(...tiempos(f)) - 0.03, centro: fin + AIRE + f.offsetWidth / 2 });
+          const clave = f.querySelector(".clave");
+          f.style.left = fin + AIRE + "px";
+          f.style.top = LINEA_Y - (clave.offsetTop + clave.offsetHeight / 2) + "px";
+          x = fin + AIRE + f.offsetWidth + AIRE;
+        }));
+        const ultimo = { x0: x, x1: x + TRAMOS[TRAMOS.length - 1], hasta: DURACION };
+        ultimo.centro = tramos[tramos.length - 1].centro + DERIVA_FINAL;
+        tramos.push(ultimo);
+        const ancho = ultimo.x1 + 1200;
+        mundo.style.width = ancho + "px";
+        svg.setAttribute("width", ancho);
+        svg.setAttribute("viewBox", `0 0 ${ancho} 1920`);
+
+        // 2) Animar: cada tramo se dibuja entre la última palabra de la frase anterior y la primera de la siguiente.
+        const tl = gsap.timeline({ paused: true });
+        let desde = 0;
+        let camara = 0;
+        tramos.forEach((tr, i) => {
+          const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+          path.setAttribute("class", "tramo");
+          path.setAttribute("d", `M${tr.x0} ${LINEA_Y} H${tr.x1}`);
+          path.setAttribute("pathLength", "1");
+          path.setAttribute("stroke-dasharray", "1 1");
+          svg.insertBefore(path, punta);
+          const dur = Math.max(0.2, tr.hasta - desde);
+          const ease = i === 0 ? "power2.out" : i === tramos.length - 1 ? "none" : "sine.inOut";
+          tl.fromTo(path, { attr: { "stroke-dashoffset": 1 } }, { attr: { "stroke-dashoffset": 0 }, duration: dur, ease }, desde);
+          tl.fromTo(punta, { x: tr.x0, y: LINEA_Y }, { x: tr.x1, y: LINEA_Y, duration: dur, ease, immediateRender: i === 0 }, desde);
+          const destino = -(tr.centro - 540);
+          tl.fromTo(mundo, { x: camara }, { x: destino, duration: dur, ease, immediateRender: i === 0 }, desde);
+          camara = destino;
+          if (i < frases.length) desde = Math.max(...tiempos(frases[i])) + 0.12;
+        });
+        // Zoom lento de toda la lámina, de punta a punta
+        tl.fromTo(raiz.querySelector(".lente"), { scale: 1 }, { scale: 1.04, duration: DURACION, ease: "none" }, 0);
+        entrarPalabras(tl, palabras);
+        window.__timelines = window.__timelines || {};
+        window.__timelines["linea-texto"] = tl;
+      });
+    })();
+  </script>
+</template>

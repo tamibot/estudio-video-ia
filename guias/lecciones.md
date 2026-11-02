@@ -64,3 +64,18 @@ revisores: si no las conocen, proponen lo mismo que ya se rechazó.
 24. **Material grabado: primero sacar silencios** (auto-editor), después editar. Montar sobre el
     bruto alarga cada ronda.
 25. **Una key mal pegada no es un bloqueo**: un 401 se corrige en `.env`; solo 403/429 son freno.
+
+## Método (tutorial de Joseph, talking head minimal)
+
+26. **Primero entender el estilo como editor, después enseñárselo a Claude.** Sin saber por qué una
+    escena funciona, la IA solo produce videos malos más rápido.
+27. **Videos = lógica, tablero = diseño.** Las referencias enseñan dónde y cuánto dura cada animación;
+    el tablero de Figma por tipo de escena enseña cómo se ve. Hace falta lo uno y lo otro.
+28. **El plan lo decide la persona.** La IA recomienda diseños; sola no es lo bastante creativa para
+    planificar. El documento de planificación es el paso que más pesa en el resultado.
+29. **Anuncia → cara; describe → muéstralo.** Abrir siempre en la cara con subtítulos.
+30. **El primer render queda al 60-70 %.** Se espera una ronda de 5-6 correcciones concretas.
+31. **La textura se mueve con lo que cubre.** Una textura quieta sobre una escena que se desliza se nota.
+32. **En talking head, el sonido va al final**, con la imagen aprobada; la voz ya marca el tiempo.
+33. **`npx hyperframes clean` limpia todos los proyectos que recuerda**, no solo la carpeta dada
+    (borró capturas de otro proyecto). Limpiar con `kit.sh limpiar`.

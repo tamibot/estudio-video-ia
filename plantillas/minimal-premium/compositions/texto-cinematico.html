@@ -1,0 +1,124 @@
+<!--
+  Escena 1 · Texto cinemático sobre A-roll (minimal premium)
+  Capa transparente: va ENCIMA del video del orador (en index.html el video tiene z-index menor).
+  Editar: cada .frase es un grupo que se ve solo; data-sale = segundo en que desaparece (corte seco).
+          Cada línea lleva data-t = segundo de cada palabra, en orden (una cifra por palabra).
+          .clave = palabra grande al centro (Inter 800); agrega "serif" para Playfair Bold Italic.
+          .chica izq / der / (nada) = palabras chicas alineadas al borde izquierdo, derecho o al centro de la clave.
+  Tiempos en segundos desde el inicio de la escena.
+-->
+<template>
+  <style>
+    @font-face { font-family: "Inter"; src: url("assets/fuentes/inter-latin.woff2") format("woff2"); font-weight: 100 900; font-style: normal; }
+    @font-face { font-family: "Playfair Display"; src: url("assets/fuentes/playfair-italic-latin.woff2") format("woff2"); font-weight: 400 900; font-style: italic; }
+    #root {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      --blanco: #F5F4F2;
+      --centro-y: 1130px; /* tercio medio-bajo, sobre el pecho */
+    }
+    .frase {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: var(--centro-y);
+      display: flex;
+      justify-content: center;
+    }
+    .bloque {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      transform: translateY(-50%);
+      color: var(--blanco);
+      text-shadow: 0 2px 22px rgba(0, 0, 0, 0.45);
+    }
+    .chica {
+      font: 500 50px/1.15 "Inter", sans-serif;
+      letter-spacing: -0.01em;
+      opacity: 0.85;
+      white-space: nowrap;
+    }
+    .chica.izq { align-self: flex-start; padding-left: 0.12em; }
+    .chica.der { align-self: flex-end; padding-right: 0.12em; }
+    .clave {
+      font: 800 164px/0.92 "Inter", sans-serif;
+      letter-spacing: -0.03em;
+      white-space: nowrap;
+      width: max-content;
+    }
+    .clave.serif { font: italic 700 170px/1 "Playfair Display", serif; letter-spacing: -0.01em; }
+    .palabra { display: inline-block; }
+  </style>
+
+  <div id="root" data-composition-id="texto-cinematico" data-width="1080" data-height="1920">
+    <div class="frase" data-sale="1.5">
+      <div class="bloque">
+        <span class="chica izq" data-t="0 0">Lo que</span>
+        <span class="clave" data-t="0.42">repites</span>
+        <span class="chica der" data-t="0.80 0.98">cada día</span>
+      </div>
+    </div>
+    <div class="frase" data-sale="3">
+      <div class="bloque">
+        <span class="chica der" data-t="1.50 1.64 1.86">se convierte en</span>
+        <span class="clave serif" data-t="2.10">hábito.</span>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (() => {
+      const raiz = document.querySelector('[data-composition-id="texto-cinematico"]');
+      const ANCHO_MAX = 860; // 80 % del ancho: zona segura de títulos
+
+      // --- común a las escenas minimal premium ---
+      const partirPalabras = (r) => {
+        const out = [];
+        r.querySelectorAll("[data-t]").forEach((linea) => {
+          const t = linea.dataset.t.trim().split(/\s+/).map(Number);
+          const textos = linea.textContent.trim().split(/\s+/);
+          linea.textContent = "";
+          textos.forEach((txt, i) => {
+            const s = document.createElement("span");
+            s.className = "palabra";
+            s.textContent = txt;
+            linea.append(s);
+            if (i < textos.length - 1) linea.append(" ");
+            // ponytail: si faltan tiempos, las palabras sobrantes van cada 0,12 s
+            out.push({ el: s, t: t[i] ?? t[t.length - 1] + 0.12 * (i - t.length + 1), clave: linea.classList.contains("clave") });
+          });
+        });
+        return out;
+      };
+      const ajustarClaves = (r, max) =>
+        r.querySelectorAll(".clave").forEach((el) => {
+          if (el.offsetWidth > max) el.style.fontSize = (parseFloat(getComputedStyle(el).fontSize) * max) / el.offsetWidth + "px";
+        });
+      const entrarPalabras = (tl, palabras) =>
+        palabras.filter((p) => p.t > 0).forEach(({ el, t, clave }) => { // t = 0: ya está en pantalla en el cuadro 1
+          tl.fromTo(el, { opacity: 0, filter: "blur(10px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.2, ease: "power2.out" }, t);
+          if (clave) tl.fromTo(el, { scale: 0.96 }, { scale: 1, duration: 0.25, ease: "power3.out" }, t);
+        });
+      // El runtime oculta con display:none las escenas que no están en pantalla: se mide mostrándola un instante.
+      const medir = (r, fn) => {
+        const s = r.getAttribute("style");
+        r.style.setProperty("display", "block", "important");
+        try { return fn(); } finally { s == null ? r.removeAttribute("style") : r.setAttribute("style", s); }
+      };
+      const fuentes = Promise.all(["500 40px Inter", "800 40px Inter", "italic 700 40px 'Playfair Display'"].map((f) => document.fonts.load(f))).catch(() => {});
+      // --- fin común ---
+
+      const palabras = partirPalabras(raiz);
+      fuentes.then(() => {
+        medir(raiz, () => ajustarClaves(raiz, ANCHO_MAX));
+        const tl = gsap.timeline({ paused: true });
+        entrarPalabras(tl, palabras);
+        raiz.querySelectorAll(".frase").forEach((f) => tl.set(f, { opacity: 0 }, parseFloat(f.dataset.sale))); // corte seco entre frases
+        window.__timelines = window.__timelines || {};
+        window.__timelines["texto-cinematico"] = tl;
+      });
+    })();
+  </script>
+</template>

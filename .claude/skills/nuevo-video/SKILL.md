@@ -1,6 +1,6 @@
 ---
 name: nuevo-video
-description: Producción completa de un video nuevo con el equipo de agentes — brief, guion con hooks, plan de edición, audio con ritmo, construcción en HyperFrames o Remotion, revisión y render final — con un OK de la persona en cada etapa. Usar cuando dice «hagamos un video», «nuevo video», «un anuncio de…», «un reel sobre…», «edita este material», o tras terminar las referencias.
+description: Producción completa de un video con el equipo de agentes — guion nuevo (brief, hooks, plan, audio, construcción, revisión, render) o material grabado / talking head (silencios fuera, transcripción al milisegundo, documento de planificación que decide la persona, assets, construcción, correcciones y diseño sonoro al final) — con un OK de la persona en cada etapa. Usar cuando dice «hagamos un video», «nuevo video», «un anuncio de…», «un reel sobre…», «edita este material», o tras terminar las referencias.
 ---
 
 # Nuevo video: de la idea al MP4
@@ -8,6 +8,48 @@ description: Producción completa de un video nuevo con el equipo de agentes —
 Antes de empezar lee `perfil/PERFIL.md`, `perfil/ESTILO.md`, `perfil/APRENDIZAJES.md` (si existe)
 y `guias/lecciones.md`. Crea `proyectos/<AAAA-MM-DD-slug>/`. Cada etapa termina con algo que la
 persona ve y aprueba; no avances sin ese OK.
+
+Hay dos caminos según el material:
+
+- **Material grabado** (talking head, clase, podcast, entrevista: la voz ya existe) → el camino de
+  abajo, «Editar material grabado». Es el método de `guias/entrenar-un-estilo.md` (parte 2).
+- **Guion nuevo** (anuncio, explicativo, animación sin grabar) → de la etapa 0 a la 6.
+
+## Editar material grabado (talking head)
+
+1. **Brief corto** (etapa 0) y el clip a `proyectos/<v>/material/bruto.<ext>` (que lo arrastre al chat).
+2. **Limpiar y transcribir** (avísale: ~15 min en un clip de 1-3 min):
+   - Silencios fuera dejando 30 ms de aire:
+     `auto-editor proyectos/<v>/material/bruto.mp4 --edit audio:threshold=0.04 --margin 0.03s -o proyectos/<v>/material/limpio.mp4 --no-open`
+     (si suena atropellado, `--margin 0.08s`; muéstrale el resultado).
+   - Transcripción palabra por palabra al milisegundo del clip limpio: `ffmpeg -i proyectos/<v>/material/limpio.mp4 -ar 16000 -ac 1 proyectos/<v>/material/limpio.wav`
+     y `whisper-cli -m <modelo> -l <idioma> -ml 1 -sow -oj --vad -vm ~/modelos-whisper/vad-silero-v5.1.2.bin -dtw large.v3.turbo -nfa -f proyectos/<v>/material/limpio.wav -of proyectos/<v>/material/palabras`
+     (deja `palabras.json`; el `clip` de `plan.json` es `material/limpio.mp4`, relativo a `plan.json`).
+     Control: la última palabra debe terminar cerca del final del clip y no debe haber huecos de más
+     de 1 s con voz; whisper a veces se salta una frase (sobre todo si se repite): transcribe ese
+     tramo aparte (`ffmpeg -ss <a> -to <b>`) y súmalo con su desfase.
+3. **Documento de planificación.** Parte el guion en beats (una idea o media frase, 1,5-4 s) y para
+   cada uno propone 2-3 diseños del estilo (skill `estilo-…` y su `perfil/biblioteca/`, o
+   `estilo-minimal-premium`), con la imagen de referencia (`ref`) y en `visto_en` dónde y por qué el
+   creador usa ese diseño. Aplica sus reglas de planificación al ordenar las opciones (la primera es
+   la recomendada). Escribe `proyectos/<v>/plan.json` y:
+   `python3 scripts/plan_edicion.py proyectos/<v>/plan.json` → `open proyectos/<v>/plan.html`.
+4. **La persona planifica** (el paso más importante): en el documento elige un diseño por beat o
+   escribe el suyo, y aprieta «Copiar plan». Cuando pegue el plan en el chat, guárdalo en `plan.md`.
+   No construyas sin plan: la IA sola planifica peor que la persona.
+5. **Lista de assets** en `pedidos.md` (pinturas, B-roll, fotos, ilustraciones, fuentes) y búsqueda:
+   `python3 scripts/assets.py pinturas|fotos|broll "<búsqueda en inglés>" proyectos/<v>/assets/<tipo>`
+   (gratis; B-roll pide `PEXELS_API_KEY`). Lo que no aparezca: pídeselo a la persona o, si suma y
+   con su OK de costo, `imagen.py`. Puedes usar el navegador para buscar, nunca para descargar algo
+   con licencia dudosa.
+6. **Construcción** (agente `editor`): fuentes del estilo, subtítulos del A-roll con el texto
+   cinemático, luego escena por escena según `plan.md` (copiando de `plantillas/` cuando exista la
+   escena) → `out/avance-v1.mp4` y `open`. Dile que el v1 suele quedar al 60-70 %.
+7. **Correcciones** (revisor primero, luego la persona, «segundo + qué cambiar»), hasta que diga que
+   la imagen está lista.
+8. **Diseño sonoro al final** (agente `sonidista`, con la imagen aprobada): música y efectos como los
+   usa el estilo (en el minimal premium: click en textos, trazo en líneas y gráficos, whoosh en
+   entradas de cámara, golpe suave en palabras clave), mezcla −14 LUFS → etapa 6 (entrega).
 
 ## 0. Brief (tú, en la conversación)
 

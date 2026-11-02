@@ -62,6 +62,7 @@ estado() {
   echo "Keys en .env (opcionales; nunca en el chat):"
   key ELEVENLABS_API_KEY && echo "  ✓ ElevenLabs (voz, efectos, música)" || echo "  · ElevenLabs sin configurar: tu voz o la voz guía local, sonidos libres"
   key OPENAI_API_KEY && echo "  ✓ OpenAI (imágenes puntuales)" || echo "  · OpenAI sin configurar: sin imágenes generadas"
+  key PEXELS_API_KEY && echo "  ✓ Pexels (B-roll de stock)" || echo "  · Pexels sin configurar: B-roll propio o de otra fuente"
   ls "$HOME"/.cache/estudio-video-ia/STOP-* >/dev/null 2>&1 && echo "  ! STOP activo: $(cd "$HOME/.cache/estudio-video-ia" && ls STOP-* | tr '\n' ' ')— no reintentar, avisar"
   local gb; gb="$(libres_gb)"
   [ "$gb" -lt 20 ] && echo "  ! disco: quedan $gb GB (<20): avisar antes de instalar o renderizar"
@@ -151,7 +152,8 @@ limpiar() {
   [ -d "$p" ] || p="$RAIZ/$p"
   local antes; antes="$(du -sh "$p" | cut -f1)"
   find "$p" -type d \( -name node_modules -o -name .cache -o -name .remotion -o -name .venv \) -prune -exec rm -rf {} +
-  [ -d "$p/video" ] && (cd "$p/video" && npx -y hyperframes@latest clean --snapshots >/dev/null 2>&1)
+  # no `hyperframes clean`: limpia también otros proyectos que HyperFrames recuerda
+  find "$p" -type d \( -path '*/.hyperframes/artifacts' -o -name .thumbnails \) -prune -exec rm -rf {} +
   if pgrep -f 'remotion (render|still)|hyperframes(@[0-9.a-z]+)? render' >/dev/null; then
     echo "hay un render en marcha: los temporales de Remotion quedan para después"
   else

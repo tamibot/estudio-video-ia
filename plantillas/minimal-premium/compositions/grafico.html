@@ -1,0 +1,143 @@
+<!--
+  Escena 10 · Gráfico (minimal premium)
+  Fondo oscuro plano con grano, cuadrícula blanca fina que brilla, una bola azul que dibuja una línea
+  escalonada que sube; la cámara sigue a la bola.
+  Editar: el texto (arriba, fijo en cuadro) con data-t = segundo de cada palabra.
+          La curva y los tiempos: constantes al inicio del script (PUNTOS en coordenadas del mundo,
+          1080 x 2700; empieza abajo a la izquierda y sube).
+-->
+<template>
+  <style>
+    @font-face { font-family: "Inter"; src: url("assets/fuentes/inter-latin.woff2") format("woff2"); font-weight: 100 900; font-style: normal; }
+    @font-face { font-family: "Playfair Display"; src: url("assets/fuentes/playfair-italic-latin.woff2") format("woff2"); font-weight: 400 900; font-style: italic; }
+    #root {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      background: #08080A;
+      --tinta: #08080A; --azul: #1B42D3; --blanco: #F5F4F2;
+    }
+    .capa { position: absolute; inset: 0; }
+    /* Mundo más alto que el cuadro: fondo, textura, cuadrícula y curva suben juntos con la cámara. */
+    .mundo { position: absolute; left: -60px; top: 0; width: 1200px; height: 2700px; }
+    .fondo { background: radial-gradient(ellipse 70% 40% at 50% 60%, #121214 0%, var(--tinta) 100%); }
+    .grano { background: url("assets/texturas/grano.svg") 0 0 / 512px 512px repeat; opacity: 0.09; }
+    .dibujo { position: absolute; left: 0; top: 0; overflow: visible; }
+    .linea { fill: none; stroke: var(--blanco); stroke-width: 5; stroke-linejoin: round; stroke-linecap: round; }
+    .brillo-blanco { filter: drop-shadow(0 0 6px rgba(245, 244, 242, 0.8)) drop-shadow(0 0 18px rgba(245, 244, 242, 0.35)); }
+    .brillo-azul { filter: drop-shadow(0 0 10px rgba(27, 66, 211, 1)) drop-shadow(0 0 26px rgba(27, 66, 211, 0.7)); }
+    .texto { position: absolute; left: 0; right: 0; top: 540px; display: flex; justify-content: center; }
+    .bloque { display: flex; flex-direction: column; align-items: center; transform: translateY(-50%); color: var(--blanco); }
+    .chica { font: 500 48px/1.15 "Inter", sans-serif; letter-spacing: -0.01em; opacity: 0.8; white-space: nowrap; }
+    .chica.izq { align-self: flex-start; padding-left: 0.12em; }
+    .chica.der { align-self: flex-end; padding-right: 0.12em; }
+    .clave { font: 800 190px/0.92 "Inter", sans-serif; letter-spacing: -0.03em; white-space: nowrap; width: max-content; }
+    .clave.serif { font: italic 700 196px/1 "Playfair Display", serif; letter-spacing: -0.01em; }
+    .palabra { display: inline-block; }
+  </style>
+
+  <div id="root" data-composition-id="grafico" data-width="1080" data-height="1920">
+    <div class="mundo">
+      <div class="capa fondo"></div>
+      <div class="capa grano"></div>
+      <svg class="dibujo" width="1200" height="2700" viewBox="-60 0 1200 2700">
+        <defs>
+          <pattern id="gr-celda" width="120" height="120" patternUnits="userSpaceOnUse" x="0" y="50">
+            <path d="M120 0H0V120" fill="none" stroke="#F5F4F2" stroke-opacity="0.05" stroke-width="7"></path>
+            <path d="M120 0H0V120" fill="none" stroke="#F5F4F2" stroke-opacity="0.2" stroke-width="1.5"></path>
+          </pattern>
+        </defs>
+        <rect x="-60" y="0" width="1200" height="2700" fill="url(#gr-celda)"></rect>
+        <g class="brillo-blanco">
+          <path class="linea eje" d="M120 1050V2450H1000" stroke-opacity="0.55"></path>
+          <path class="linea curva" pathLength="1" stroke-dasharray="1 1"></path>
+        </g>
+        <g class="bola brillo-azul">
+          <circle r="17" fill="#1B42D3"></circle>
+          <circle r="6" fill="#F5F4F2" opacity="0.55"></circle>
+        </g>
+      </svg>
+    </div>
+    <div class="texto">
+      <div class="bloque">
+        <span class="chica izq" data-t="0.10 0.30">mejora un</span>
+        <span class="clave" data-t="0.52 0.52">1 %</span>
+        <span class="chica der" data-t="0.95 1.12">cada día</span>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (() => {
+      const raiz = document.querySelector('[data-composition-id="grafico"]');
+      const ANCHO_MAX = 860;
+      // Curva escalonada (x, y del mundo). Cada par es un tramo recto: horizontal = avanza, vertical = sube.
+      const PUNTOS = [[120, 2450], [300, 2450], [300, 2290], [450, 2290], [450, 2080], [600, 2080], [600, 1820], [740, 1820], [740, 1520], [860, 1520], [860, 1250], [950, 1250]];
+      const DIBUJO = [0, 2.5];         // segundos en que la bola empieza y termina de dibujar
+      const CAMARA_Y = [-750, -250];   // desplazamiento del mundo al inicio y al final (la cámara sube con la bola)
+      const DURACION = 3;              // igual al data-duration del host
+
+      // --- común a las escenas minimal premium ---
+      const partirPalabras = (r) => {
+        const out = [];
+        r.querySelectorAll("[data-t]").forEach((linea) => {
+          const t = linea.dataset.t.trim().split(/\s+/).map(Number);
+          const textos = linea.textContent.trim().split(/\s+/);
+          linea.textContent = "";
+          textos.forEach((txt, i) => {
+            const s = document.createElement("span");
+            s.className = "palabra";
+            s.textContent = txt;
+            linea.append(s);
+            if (i < textos.length - 1) linea.append(" ");
+            // ponytail: si faltan tiempos, las palabras sobrantes van cada 0,12 s
+            out.push({ el: s, t: t[i] ?? t[t.length - 1] + 0.12 * (i - t.length + 1), clave: linea.classList.contains("clave") });
+          });
+        });
+        return out;
+      };
+      const ajustarClaves = (r, max) =>
+        r.querySelectorAll(".clave").forEach((el) => {
+          if (el.offsetWidth > max) el.style.fontSize = (parseFloat(getComputedStyle(el).fontSize) * max) / el.offsetWidth + "px";
+        });
+      const entrarPalabras = (tl, palabras) =>
+        palabras.filter((p) => p.t > 0).forEach(({ el, t, clave }) => { // t = 0: ya está en pantalla en el cuadro 1
+          tl.fromTo(el, { opacity: 0, filter: "blur(10px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.2, ease: "power2.out" }, t);
+          if (clave) tl.fromTo(el, { scale: 0.96 }, { scale: 1, duration: 0.25, ease: "power3.out" }, t);
+        });
+      // El runtime oculta con display:none las escenas que no están en pantalla: se mide mostrándola un instante.
+      const medir = (r, fn) => {
+        const s = r.getAttribute("style");
+        r.style.setProperty("display", "block", "important");
+        try { return fn(); } finally { s == null ? r.removeAttribute("style") : r.setAttribute("style", s); }
+      };
+      const fuentes = Promise.all(["500 40px Inter", "800 40px Inter", "italic 700 40px 'Playfair Display'"].map((f) => document.fonts.load(f))).catch(() => {});
+      // --- fin común ---
+
+      const palabras = partirPalabras(raiz);
+      fuentes.then(() => {
+        medir(raiz, () => ajustarClaves(raiz, ANCHO_MAX));
+        const curva = raiz.querySelector(".curva");
+        const bola = raiz.querySelector(".bola");
+        curva.setAttribute("d", "M" + PUNTOS.map((p) => p.join(" ")).join(" L"));
+
+        const tl = gsap.timeline({ paused: true });
+        // La línea se dibuja a velocidad constante y la bola recorre los mismos tramos con el mismo reloj:
+        // la punta y la bola coinciden en cada cuadro sin medir nada en tiempo de render.
+        const largos = PUNTOS.slice(1).map((p, i) => Math.hypot(p[0] - PUNTOS[i][0], p[1] - PUNTOS[i][1]));
+        const total = largos.reduce((a, b) => a + b, 0);
+        const seg = (DIBUJO[1] - DIBUJO[0]) / total;
+        tl.fromTo(curva, { attr: { "stroke-dashoffset": 1 } }, { attr: { "stroke-dashoffset": 0 }, duration: DIBUJO[1] - DIBUJO[0], ease: "none" }, DIBUJO[0]);
+        let t = DIBUJO[0];
+        PUNTOS.slice(1).forEach((p, i) => {
+          tl.fromTo(bola, { x: PUNTOS[i][0], y: PUNTOS[i][1] }, { x: p[0], y: p[1], duration: largos[i] * seg, ease: "none", immediateRender: i === 0 }, t);
+          t += largos[i] * seg;
+        });
+        tl.fromTo(raiz.querySelector(".mundo"), { y: CAMARA_Y[0] }, { y: CAMARA_Y[1], duration: DURACION, ease: "power1.inOut" }, 0);
+        entrarPalabras(tl, palabras);
+        window.__timelines = window.__timelines || {};
+        window.__timelines["grafico"] = tl;
+      });
+    })();
+  </script>
+</template>

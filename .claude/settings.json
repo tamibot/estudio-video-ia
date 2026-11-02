@@ -20,6 +20,9 @@
       "Bash(bash scripts/kit.sh voz:*)",
       "Bash(bash scripts/kit.sh limpiar:*)",
       "Bash(python3 scripts/referencia.py:*)",
+      "Bash(python3 scripts/plan_edicion.py:*)",
+      "Bash(python3 scripts/assets.py:*)",
+      "Bash(auto-editor:*)",
       "Bash(python3 scripts/puerta.py estado)",
       "Bash(python3 scripts/eleven.py saldo)",
       "Bash(python3 scripts/eleven.py voces:*)",
@@ -50,6 +53,7 @@
       "Bash(npx *hyperframes* media-use generate*)",
       "Bash(npx *hyperframes* * --engine heygen*)",
       "Bash(npx *hyperframes* * --quality best*)",
+      "Bash(npx *hyperframes* clean*)",
       "Bash(npm run publish*)",
       "Bash(npx remotion lambda*)",
       "Bash(npx remotion cloudrun*)"

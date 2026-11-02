@@ -1,0 +1,39 @@
+<!doctype html>
+<!--
+  Demo de la plantilla «minimal premium»: las 5 escenas seguidas con corte seco (3 s cada una, 15 s).
+  Cada escena vive sola en compositions/<escena>.html; aquí solo se monta.
+-->
+<html lang="es" data-resolution="portrait">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1080, height=1920" />
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/gsap.min.js"></script>
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body { width: 1080px; height: 1920px; overflow: hidden; background: #08080A; }
+      #root { position: relative; width: 100%; height: 100%; }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="main" data-start="0" data-duration="15" data-width="1080" data-height="1920">
+      <!-- Solo demo: en un video real aquí va el <video> del orador (z-index menor que los subtítulos) -->
+      <div id="aroll-demo" data-composition-id="aroll-demo" data-composition-src="compositions/aroll-demo.html"
+        data-start="0" data-duration="3" data-track-index="0" data-track-kind="graphics" data-width="1080" data-height="1920" style="z-index: 1"></div>
+      <div id="texto-cinematico" data-composition-id="texto-cinematico" data-composition-src="compositions/texto-cinematico.html"
+        data-start="0" data-duration="3" data-track-index="1" data-track-kind="captions" data-width="1080" data-height="1920" style="z-index: 2"></div>
+      <div id="texto-comillas" data-composition-id="texto-comillas" data-composition-src="compositions/texto-comillas.html"
+        data-start="3" data-duration="3" data-track-index="2" data-track-kind="graphics" data-width="1080" data-height="1920" style="z-index: 3"></div>
+      <div id="linea-texto" data-composition-id="linea-texto" data-composition-src="compositions/linea-texto.html"
+        data-start="6" data-duration="3" data-track-index="2" data-track-kind="graphics" data-width="1080" data-height="1920" style="z-index: 3"></div>
+      <div id="grafico" data-composition-id="grafico" data-composition-src="compositions/grafico.html"
+        data-start="9" data-duration="3" data-track-index="2" data-track-kind="graphics" data-width="1080" data-height="1920" style="z-index: 3"></div>
+      <div id="ilustracion-central" data-composition-id="ilustracion-central" data-composition-src="compositions/ilustracion-central.html"
+        data-start="12" data-duration="3" data-track-index="2" data-track-kind="graphics" data-width="1080" data-height="1920" style="z-index: 3"></div>
+    </div>
+    <script>
+      const tl = gsap.timeline({ paused: true });
+      window.__timelines = window.__timelines || {};
+      window.__timelines["main"] = tl;
+    </script>
+  </body>
+</html>

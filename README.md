@@ -45,11 +45,19 @@ Claude revisa qué falta al abrir y te lleva paso a paso:
    las skills. Una sola vez, ~3 GB y 10-20 minutos.
 2. **`/referencias`** — «Pásame tus referencias»: 3 a 5 videos que te gusten (Instagram, TikTok,
    YouTube o archivos). Los desarma cuadro a cuadro, mide el ritmo contra la música, la luz y el
-   color, y arma tu biblia de estilo.
+   color, y arma tu biblia de estilo. Para copiar a un creador puntual, **modo entrenar**: hasta 20
+   videos suyos, tablero en Figma por tipo de escena, biblioteca de animaciones y una skill del estilo.
 3. **`/empezar`** — el Director te entrevista: para qué son tus videos, dónde se publican, quién
    eres, a quién le hablas, tu tono y tu identidad.
-4. **`/nuevo-video`** — brief → guion con 5 ganchos → plan → audio → avance → rondas de cambios →
-   MP4 final. Te pide OK en cada etapa y antes de gastar.
+4. **`/nuevo-video`** — guion nuevo: brief → guion con 5 ganchos → plan → audio → avance → rondas
+   de cambios → MP4 final. Con **tu grabación** (talking head): silencios fuera → transcripción al
+   milisegundo → **documento de planificación** donde eliges el diseño de cada momento → construcción
+   → correcciones → diseño sonoro. Te pide OK en cada etapa y antes de gastar.
+
+Estilo listo para usar: **minimal premium** (talking head educativo con papel, texto de dos
+fuentes, pinturas, líneas azules e ilustraciones), en la skill `estilo-minimal-premium` y
+`plantillas/minimal-premium/`. El método de entrenar y editar viene del tutorial de Joseph
+(Ultimate Editors), [*How to Edit VIRAL Talking Head Videos Using ONLY Claude!*](https://www.youtube.com/watch?v=g9xoKm5DEeU).
 
 `/ayuda` en cualquier momento: dónde vas, qué sigue y qué puedes decir.
 
@@ -74,6 +82,8 @@ Propias (`scripts/`):
 | `referencia.py` | desarma un video: planos, cortes secos y animados, láminas, transcripción, bpm, beats, % de cortes en el beat, luz y color |
 | `eleven.py` | voz, efectos y música con ElevenLabs |
 | `imagen.py` | imágenes puntuales con OpenAI, con el prompt guardado al lado |
+| `plan_edicion.py` | documento de planificación: guion y clip de cada momento, diseños recomendados, tus notas y «Copiar plan» |
+| `assets.py` | pinturas y fotos de dominio público (Wikimedia Commons) y B-roll de stock (Pexels), con créditos |
 | `puerta.py` | contador compartido de cuotas: espacia descargas, frena ante 429 y exige permiso por lote para lo que cuesta |
 
 Externas que instala: [HyperFrames](https://github.com/heygen-com/hyperframes) (motor, auditoría
@@ -88,8 +98,8 @@ se instalan **dentro del proyecto** (`.claude/skills/`, fuera de git): no tocan 
 
 ## Guías (`guias/`)
 
-`estilos.md` · `ritmo-y-transiciones.md` · `audio.md` · `motores.md` · `plataformas.md` ·
-`lecciones.md` (todo lo que ya costó una ronda de corrección).
+`entrenar-un-estilo.md` (el método completo) · `estilos.md` · `ritmo-y-transiciones.md` · `audio.md` ·
+`motores.md` · `plataformas.md` · `lecciones.md` (todo lo que ya costó una ronda de corrección).
 
 ## Tus datos y tus keys
 

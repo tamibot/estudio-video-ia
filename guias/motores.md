@@ -44,7 +44,8 @@ respiraciones que daban ritmo; subir `--margin` a 0,3–0,4 s si suena atropella
 5. `npx hyperframes preview --background` para que la persona lo vea en vivo (`--stop` al terminar).
 6. `npx hyperframes render --quality draft --output ../out/avance-v1.mp4` (avances, ~25 s por
    4 s de video); `--quality delivery` para el final. Verificar duración con `ffprobe` y mirar cuadros.
-7. Al entregar: `bash scripts/kit.sh limpiar proyectos/<v>` (usa además `npx hyperframes clean`).
+7. Al entregar: `bash scripts/kit.sh limpiar proyectos/<v>`. **No uses `npx hyperframes clean`**:
+   aunque le pases una carpeta, limpia también los demás proyectos que HyperFrames recuerda.
 
 ## Ciclo Remotion
 
@@ -74,7 +75,7 @@ también busca en un catálogo grande de música, imágenes e íconos; generar c
 | Igualar volumen entre pistas | `npx hyperframes normalize-audio` |
 | Elegir un look de color | `npx hyperframes grade-compare` |
 | Grabar una web para usarla en el video | `npx hyperframes capture <url>` |
-| Revisar el sistema / limpiar disco | `npx hyperframes doctor` · `npx hyperframes clean --snapshots` |
+| Revisar el sistema | `npx hyperframes doctor` (para limpiar disco, `kit.sh limpiar`, nunca `hyperframes clean`) |
 | No mandar estadísticas de uso | `npx hyperframes telemetry disable` |
 
 **Cuestan o publican (solo con OK de la persona, la configuración del repo pregunta):** `publish`,
